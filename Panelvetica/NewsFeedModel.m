@@ -11,12 +11,13 @@
 
 
 @implementation NewsFeedModel
-@synthesize items;
+@synthesize items, rssFeed;
 
 - (id)initWithRSSFeed:(NSString *)targetRssFeed
 {
     if (self = [super init]) {
         rssFeed = [targetRssFeed copy];
+        finished = NO;
     }
     return self;
 }
@@ -40,6 +41,8 @@
         //TT_RELEASE_SAFELY(response);
         
         [request send];
+        
+        finished = NO;
     }
 }
 
@@ -85,9 +88,16 @@
         [items addObject:[sortedFeedItems objectAtIndex:i]];
     }
     
-    NSLog(@"News Item count: %@", [items objectAtIndex:1]);
     [super requestDidFinishLoad:request];	
+    
+    [self willChangeValueForKey:@"isFinished"];
+    finished = YES;
+    [self didChangeValueForKey:@"isFinished"];
 }
 
+- (BOOL)isFinished 
+{
+    return finished;
+}
 
 @end

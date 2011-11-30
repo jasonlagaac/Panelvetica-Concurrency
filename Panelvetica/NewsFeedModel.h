@@ -14,10 +14,15 @@
 {
     NSString               *rssFeed;
     NSMutableArray         *items;
+    
+    BOOL                   finished;
 }
 
-@property (nonatomic, retain) NSArray *items;
+@property (nonatomic, strong) NSArray *items;
+@property (nonatomic, strong) NSString *rssFeed;
+
 
 - (id)initWithRSSFeed:(NSString*)rssFeed;
+- (BOOL)isFinished;
 
 @end

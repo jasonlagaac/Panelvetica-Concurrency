@@ -7,9 +7,11 @@
 //
 
 #import "SocialMediaView.h"
-#import "SocalFeedLabel.h"
+#import "Three20/Three20.h"
 
 @implementation SocialMediaView
+
+@synthesize debugView;
 
 - (id)init {
         
@@ -18,59 +20,12 @@
     self = [self initWithFrame:CGRectZero];
     
     [self setHeader:[UIImage imageNamed:@"socialfeed.png"]];
+    debugView = [[UITextView alloc] initWithFrame:CGRectMake(60, 0, 300, 430)];
+    [self addSubview:debugView];
     
     return self;
 }
 
-# pragma mark -
-# pragma mark Orientation actions
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-- (void)landscapeView
-{
-    [self setFrame:landscapeDimensions];
-    [self setBackgroundColor:[UIColor clearColor]];
-    
-    int pos_y = 0;
-    for (int i = 0; i < [feedText count]; i++) {
-        SocalFeedLabel *feedTxt = [feedText objectAtIndex:i];
-        [feedTxt setFrame:CGRectMake(60, pos_y, 240, 120)];
-        
-        pos_y += 125;
-        
-        [feedTxt setNeedsDisplay];
-        [[feedTxt status_text] setFont:[UIFont fontWithName:@"Helvetica" size:13]];
-
-    }
-}
-
-- (void)portraitView
-{
-    [self setFrame:portraitDimensions];
-    [self setBackgroundColor:[UIColor clearColor]];
-    
-    for (int i = 0; i < [feedText count]; i++) {
-        SocalFeedLabel *feedTxt = [feedText objectAtIndex:i];
-        switch (i) {
-            case 0:
-                [feedTxt setFrame:CGRectMake(60, 0, 300, 105)];
-                break;
-            case 1:
-                [feedTxt setFrame:CGRectMake(374, 0, 300, 105)];
-                break;
-            case 2:
-                [feedTxt setFrame:CGRectMake(60, 115, 300, 105)];
-                break;
-            case 3:
-                [feedTxt setFrame:CGRectMake(374, 115, 300, 105)];
-                break;
-            default:
-                break;
-        }        
-    }
-        
-    [UIView commitAnimations];
-}
 
 # pragma mark -
 # pragma mark Social Media Feed Actions
@@ -78,14 +33,17 @@
 
 -(void)addNewPost:(NSString *)post 
      withUsername:(NSString *)user 
-           avatar:(UIImage *)avatar 
 {
-    SocalFeedLabel *newLbl = [[SocalFeedLabel alloc] initWithFrame:CGRectZero];
-    [newLbl setPost:post withUsername:user avatar:avatar];
+    NSString *post_string = [NSString stringWithFormat:@"<b>%@</b> •  %@", user, post];
+    post_string = [post_string stringByReplacingOccurrencesOfString:@"&" withString:@"&amp;"];
+    TTStyledTextLabel *newLbl = [[TTStyledTextLabel alloc] initWithFrame:CGRectZero];
+
+    [newLbl setHtml:post_string];
     
     [self removeOldestItem];
+    [newLbl setFont:[UIFont fontWithName:@"Helvetica" size:14]];
     [feedText insertObject:newLbl atIndex:0];
-    [self addSubview:[feedText objectAtIndex:0]];
+    [self addSubview:newLbl];
     
     [self renderFeed];
     

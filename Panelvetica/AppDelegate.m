@@ -7,8 +7,8 @@
 //
 
 #import "AppDelegate.h"
-#import "MainView.h"
 #import "RootViewController.h"
+
 
 @implementation AppDelegate
 

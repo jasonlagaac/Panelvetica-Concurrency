@@ -14,18 +14,19 @@
     ACAccount           *account;    
     id                  timeline;
     NSArray             *currentPosts;
-    BOOL                isUpdated;
+    
+    BOOL                finished;
+    NSInteger           response;
 }
 
 @property (strong, nonatomic) ACAccount *account;
 @property (strong, nonatomic) id        timeline;
 @property (strong, nonatomic) NSArray   *currentPosts;
-@property BOOL isUpdated;
-
 
 - (id)initWithAccount:(ACAccount *)acc;
 - (void)fetchTimeline;
-- (void)extractData;
+- (BOOL)isFinished;
+- (NSInteger)httpResponse;
 
 
 @end

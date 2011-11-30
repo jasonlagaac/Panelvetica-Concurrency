@@ -18,7 +18,6 @@
 		320F2C48872C2E2C4DF86205 /* libThree20UI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 320F2C48872C2E2C4DF86204 /* libThree20UI.a */; };
 		B82227161473771200BBAB08 /* NewsFeedModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B82227151473771200BBAB08 /* NewsFeedModel.m */; };
 		B82227541473817200BBAB08 /* libextThree20XML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B82227511473815B00BBAB08 /* libextThree20XML.a */; };
-		B83310811468E1A10069B78A /* SocalFeedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = B83310801468E1A10069B78A /* SocalFeedLabel.m */; };
 		B83310831468F1130069B78A /* avatar.png in Resources */ = {isa = PBXBuildFile; fileRef = B83310821468F1130069B78A /* avatar.png */; };
 		B83ED36C1476963C005D0847 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B83ED36B1476963C005D0847 /* Twitter.framework */; };
 		B83ED3771476A306005D0847 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B83ED3761476A306005D0847 /* Accounts.framework */; };
@@ -27,9 +26,12 @@
 		B8C98EEE1470CD70001F7936 /* reload-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = B8C98EEA1470CD70001F7936 /* reload-pressed.png */; };
 		B8C98EEF1470CD70001F7936 /* settings.png in Resources */ = {isa = PBXBuildFile; fileRef = B8C98EEB1470CD70001F7936 /* settings.png */; };
 		B8C98EF01470CD70001F7936 /* settings-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = B8C98EEC1470CD70001F7936 /* settings-pressed.png */; };
+		B8CA36B11481E2A1004C9C38 /* SocialFeedOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B8CA36B01481E2A1004C9C38 /* SocialFeedOperation.m */; };
+		B8CA36BD14836760004C9C38 /* SocialFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B8CA36BC14836760004C9C38 /* SocialFeedViewController.m */; };
+		B8CA36C01483677E004C9C38 /* NewsFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B8CA36BF1483677E004C9C38 /* NewsFeedViewController.m */; };
+		B8CA36C3148367D2004C9C38 /* ScheduleFeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B8CA36C2148367D2004C9C38 /* ScheduleFeedViewController.m */; };
 		B8D3CFFB147B915C00174DED /* SettingsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B8D3CFFA147B915C00174DED /* SettingsModel.m */; };
-		B8D3D007147CF76D00174DED /* FeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B8D3D006147CF76D00174DED /* FeedViewController.m */; };
-		B8D3D00F147E04C900174DED /* SocialFeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = B8D3D00E147E04C800174DED /* SocialFeedItem.m */; };
+		B8DA6B651484A85A00204F19 /* CustomOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B8DA6B641484A85A00204F19 /* CustomOperation.m */; };
 		B8DBF9D1147B290400C72FC5 /* SocialFeedModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B8DBF9D0147B290400C72FC5 /* SocialFeedModel.m */; };
 		B8F4D6931463C57C00B29353 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8F4D6921463C57C00B29353 /* UIKit.framework */; };
 		B8F4D6951463C57C00B29353 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8F4D6941463C57C00B29353 /* Foundation.framework */; };
@@ -43,7 +45,7 @@
 		B8F4D6B81463C57D00B29353 /* PanelveticaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B8F4D6B71463C57D00B29353 /* PanelveticaTests.m */; };
 		B8F4D7031463C65C00B29353 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B8F4D6FE1463C65C00B29353 /* RootViewController.m */; };
 		B8F4D7041463C65C00B29353 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B8F4D7001463C65C00B29353 /* AppDelegate.m */; };
-		B8F4D7051463C65C00B29353 /* MainView.m in Sources */ = {isa = PBXBuildFile; fileRef = B8F4D7021463C65C00B29353 /* MainView.m */; };
+		B8F4D7051463C65C00B29353 /* RootView.m in Sources */ = {isa = PBXBuildFile; fileRef = B8F4D7021463C65C00B29353 /* RootView.m */; };
 		B8F4D70D1463C68C00B29353 /* InfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = B8F4D7081463C68C00B29353 /* InfoView.m */; };
 		B8F4D70E1463C68C00B29353 /* TemperatureView.m in Sources */ = {isa = PBXBuildFile; fileRef = B8F4D70A1463C68C00B29353 /* TemperatureView.m */; };
 		B8F4D70F1463C68C00B29353 /* DateAndTimeView.m in Sources */ = {isa = PBXBuildFile; fileRef = B8F4D70C1463C68C00B29353 /* DateAndTimeView.m */; };
@@ -263,8 +265,6 @@
 		B82227141473771200BBAB08 /* NewsFeedModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsFeedModel.h; sourceTree = "<group>"; };
 		B82227151473771200BBAB08 /* NewsFeedModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsFeedModel.m; sourceTree = "<group>"; };
 		B82227461473815B00BBAB08 /* extThree20XML.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = extThree20XML.xcodeproj; path = ../../three20/src/extThree20XML/extThree20XML.xcodeproj; sourceTree = "<group>"; };
-		B833107F1468E1A10069B78A /* SocalFeedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocalFeedLabel.h; sourceTree = "<group>"; };
-		B83310801468E1A10069B78A /* SocalFeedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocalFeedLabel.m; sourceTree = "<group>"; };
 		B83310821468F1130069B78A /* avatar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = avatar.png; sourceTree = "<group>"; };
 		B83ED36B1476963C005D0847 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		B83ED3761476A306005D0847 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
@@ -273,12 +273,18 @@
 		B8C98EEA1470CD70001F7936 /* reload-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reload-pressed.png"; sourceTree = "<group>"; };
 		B8C98EEB1470CD70001F7936 /* settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settings.png; sourceTree = "<group>"; };
 		B8C98EEC1470CD70001F7936 /* settings-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings-pressed.png"; sourceTree = "<group>"; };
+		B8CA36AF1481E2A1004C9C38 /* SocialFeedOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialFeedOperation.h; sourceTree = "<group>"; };
+		B8CA36B01481E2A1004C9C38 /* SocialFeedOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialFeedOperation.m; sourceTree = "<group>"; };
+		B8CA36BB14836760004C9C38 /* SocialFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialFeedViewController.h; sourceTree = "<group>"; };
+		B8CA36BC14836760004C9C38 /* SocialFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialFeedViewController.m; sourceTree = "<group>"; };
+		B8CA36BE1483677E004C9C38 /* NewsFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsFeedViewController.h; sourceTree = "<group>"; };
+		B8CA36BF1483677E004C9C38 /* NewsFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsFeedViewController.m; sourceTree = "<group>"; };
+		B8CA36C1148367D2004C9C38 /* ScheduleFeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScheduleFeedViewController.h; sourceTree = "<group>"; };
+		B8CA36C2148367D2004C9C38 /* ScheduleFeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScheduleFeedViewController.m; sourceTree = "<group>"; };
 		B8D3CFF9147B915C00174DED /* SettingsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsModel.h; sourceTree = "<group>"; };
 		B8D3CFFA147B915C00174DED /* SettingsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsModel.m; sourceTree = "<group>"; };
-		B8D3D005147CF76D00174DED /* FeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedViewController.h; sourceTree = "<group>"; };
-		B8D3D006147CF76D00174DED /* FeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedViewController.m; sourceTree = "<group>"; };
-		B8D3D00D147E04C800174DED /* SocialFeedItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialFeedItem.h; sourceTree = "<group>"; };
-		B8D3D00E147E04C800174DED /* SocialFeedItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialFeedItem.m; sourceTree = "<group>"; };
+		B8DA6B631484A85A00204F19 /* CustomOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomOperation.h; sourceTree = "<group>"; };
+		B8DA6B641484A85A00204F19 /* CustomOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomOperation.m; sourceTree = "<group>"; };
 		B8DBF9CF147B290400C72FC5 /* SocialFeedModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialFeedModel.h; sourceTree = "<group>"; };
 		B8DBF9D0147B290400C72FC5 /* SocialFeedModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialFeedModel.m; sourceTree = "<group>"; };
 		B8F4D68E1463C57C00B29353 /* Panelvetica.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Panelvetica.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -299,8 +305,8 @@
 		B8F4D6FE1463C65C00B29353 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		B8F4D6FF1463C65C00B29353 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B8F4D7001463C65C00B29353 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		B8F4D7011463C65C00B29353 /* MainView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainView.h; sourceTree = "<group>"; };
-		B8F4D7021463C65C00B29353 /* MainView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainView.m; sourceTree = "<group>"; };
+		B8F4D7011463C65C00B29353 /* RootView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootView.h; sourceTree = "<group>"; };
+		B8F4D7021463C65C00B29353 /* RootView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootView.m; sourceTree = "<group>"; };
 		B8F4D7071463C68C00B29353 /* InfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoView.h; sourceTree = "<group>"; };
 		B8F4D7081463C68C00B29353 /* InfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoView.m; sourceTree = "<group>"; };
 		B8F4D7091463C68C00B29353 /* TemperatureView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TemperatureView.h; sourceTree = "<group>"; };
@@ -437,8 +443,6 @@
 				B82227151473771200BBAB08 /* NewsFeedModel.m */,
 				B8DBF9CF147B290400C72FC5 /* SocialFeedModel.h */,
 				B8DBF9D0147B290400C72FC5 /* SocialFeedModel.m */,
-				B8D3D00D147E04C800174DED /* SocialFeedItem.h */,
-				B8D3D00E147E04C800174DED /* SocialFeedItem.m */,
 			);
 			name = "Feed Models";
 			sourceTree = "<group>";
@@ -452,31 +456,49 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		B833107E1468E1760069B78A /* Custom Labels */ = {
+		B88FEB761480F2BB007948CF /* Operations */ = {
 			isa = PBXGroup;
 			children = (
-				B833107F1468E1A10069B78A /* SocalFeedLabel.h */,
-				B83310801468E1A10069B78A /* SocalFeedLabel.m */,
+				B8CA36AF1481E2A1004C9C38 /* SocialFeedOperation.h */,
+				B8CA36B01481E2A1004C9C38 /* SocialFeedOperation.m */,
+				B8DA6B631484A85A00204F19 /* CustomOperation.h */,
+				B8DA6B641484A85A00204F19 /* CustomOperation.m */,
 			);
-			name = "Custom Labels";
+			name = Operations;
+			sourceTree = "<group>";
+		};
+		B8CA36BA148365D0004C9C38 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B8F4D6FD1463C65C00B29353 /* RootViewController.h */,
+				B8F4D6FE1463C65C00B29353 /* RootViewController.m */,
+				B8CA36BB14836760004C9C38 /* SocialFeedViewController.h */,
+				B8CA36BC14836760004C9C38 /* SocialFeedViewController.m */,
+				B8CA36C1148367D2004C9C38 /* ScheduleFeedViewController.h */,
+				B8CA36C2148367D2004C9C38 /* ScheduleFeedViewController.m */,
+				B8CA36BE1483677E004C9C38 /* NewsFeedViewController.h */,
+				B8CA36BF1483677E004C9C38 /* NewsFeedViewController.m */,
+			);
+			name = "View Controllers";
 			sourceTree = "<group>";
 		};
 		B8D3CFFC147B916600174DED /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				B8222713147376B100BBAB08 /* Feed Models */,
 				B8D3CFF9147B915C00174DED /* SettingsModel.h */,
 				B8D3CFFA147B915C00174DED /* SettingsModel.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
 		};
-		B8D3D001147CF6F300174DED /* FeedViewControllers */ = {
+		B8DA6B5E1483E8B000204F19 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				B8D3D005147CF76D00174DED /* FeedViewController.h */,
-				B8D3D006147CF76D00174DED /* FeedViewController.m */,
+				B8F4D7101463C69200B29353 /* Feed Views */,
+				B8F4D7061463C66E00B29353 /* Information Views */,
 			);
-			name = FeedViewControllers;
+			name = Views;
 			sourceTree = "<group>";
 		};
 		B8F4D6831463C57900B29353 = {
@@ -525,14 +547,10 @@
 		B8F4D6981463C57C00B29353 /* Panelvetica */ = {
 			isa = PBXGroup;
 			children = (
-				B8D3D001147CF6F300174DED /* FeedViewControllers */,
+				B8DA6B5E1483E8B000204F19 /* Views */,
+				B8CA36BA148365D0004C9C38 /* View Controllers */,
+				B88FEB761480F2BB007948CF /* Operations */,
 				B8D3CFFC147B916600174DED /* Models */,
-				B8222713147376B100BBAB08 /* Feed Models */,
-				B833107E1468E1760069B78A /* Custom Labels */,
-				B8F4D7101463C69200B29353 /* Feed Views */,
-				B8F4D7061463C66E00B29353 /* Information Views */,
-				B8F4D6FD1463C65C00B29353 /* RootViewController.h */,
-				B8F4D6FE1463C65C00B29353 /* RootViewController.m */,
 				B8F4D6FF1463C65C00B29353 /* AppDelegate.h */,
 				B8F4D7001463C65C00B29353 /* AppDelegate.m */,
 				B8F4D6991463C57C00B29353 /* Supporting Files */,
@@ -580,8 +598,8 @@
 				B8F4D70A1463C68C00B29353 /* TemperatureView.m */,
 				B8F4D70B1463C68C00B29353 /* DateAndTimeView.h */,
 				B8F4D70C1463C68C00B29353 /* DateAndTimeView.m */,
-				B8F4D7011463C65C00B29353 /* MainView.h */,
-				B8F4D7021463C65C00B29353 /* MainView.m */,
+				B8F4D7011463C65C00B29353 /* RootView.h */,
+				B8F4D7021463C65C00B29353 /* RootView.m */,
 			);
 			name = "Information Views";
 			sourceTree = "<group>";
@@ -938,7 +956,7 @@
 				B8F4D69F1463C57C00B29353 /* main.m in Sources */,
 				B8F4D7031463C65C00B29353 /* RootViewController.m in Sources */,
 				B8F4D7041463C65C00B29353 /* AppDelegate.m in Sources */,
-				B8F4D7051463C65C00B29353 /* MainView.m in Sources */,
+				B8F4D7051463C65C00B29353 /* RootView.m in Sources */,
 				B8F4D70D1463C68C00B29353 /* InfoView.m in Sources */,
 				B8F4D70E1463C68C00B29353 /* TemperatureView.m in Sources */,
 				B8F4D70F1463C68C00B29353 /* DateAndTimeView.m in Sources */,
@@ -946,12 +964,14 @@
 				B8F4D71A1463C6A800B29353 /* ScheduleView.m in Sources */,
 				B8F4D71B1463C6A800B29353 /* NewsFeedView.m in Sources */,
 				B8F4D71C1463C6A800B29353 /* SocialMediaView.m in Sources */,
-				B83310811468E1A10069B78A /* SocalFeedLabel.m in Sources */,
 				B82227161473771200BBAB08 /* NewsFeedModel.m in Sources */,
 				B8DBF9D1147B290400C72FC5 /* SocialFeedModel.m in Sources */,
 				B8D3CFFB147B915C00174DED /* SettingsModel.m in Sources */,
-				B8D3D007147CF76D00174DED /* FeedViewController.m in Sources */,
-				B8D3D00F147E04C900174DED /* SocialFeedItem.m in Sources */,
+				B8CA36B11481E2A1004C9C38 /* SocialFeedOperation.m in Sources */,
+				B8CA36BD14836760004C9C38 /* SocialFeedViewController.m in Sources */,
+				B8CA36C01483677E004C9C38 /* NewsFeedViewController.m in Sources */,
+				B8CA36C3148367D2004C9C38 /* ScheduleFeedViewController.m in Sources */,
+				B8DA6B651484A85A00204F19 /* CustomOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

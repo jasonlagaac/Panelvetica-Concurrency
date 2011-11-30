@@ -9,8 +9,13 @@
 #import "FeedView.h"
 
 @interface SocialMediaView : FeedView
+{
+    UITextView  *debugView;
+}
+
+@property (nonatomic, strong)  UITextView  *debugView;
+
 
 -(void)addNewPost:(NSString *)post 
-     withUsername:(NSString *)user 
-           avatar:(UIImage *)avatar;
+     withUsername:(NSString *)user;
 @end

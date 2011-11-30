@@ -9,28 +9,35 @@
 #import <UIKit/UIKit.h>
 #import <Accounts/Accounts.h>
 
-@class MainView;
-@class NewsFeedModel;
-@class SocialFeedModel;
+@class RootView;
 @class SettingsModel;
+
+@class SocialFeedViewController;
+@class SocialFeedOperation;
+
+@class NewsFeedViewController;
+
+@class ScheduleFeedViewController;
 
 @interface RootViewController : UIViewController 
 {
-    MainView        *main_view;
+    RootView                    *rootView;
+    SettingsModel               *settings;
+    NSTimer                     *updateTimer;
     
-    NSTimer         *dateTimeTimer;
-    NSTimer         *feedTimer;
-    NSTimer         *socialFeedTimer;
+    SocialFeedViewController    *socialFeedViewController;
+    SocialFeedOperation         *socialFeedOper;
     
-    NSMutableArray  *timeZones;
-    NewsFeedModel   *newsFeed;
-    SocialFeedModel *socialFeed;
+    // NOTE: There is no NewsFeedOperation as TTURLRequest 
+    // already does operations concurrently.
+    NewsFeedViewController      *newsFeedViewController;
     
-    SettingsModel   *settings;
+    ScheduleFeedViewController  *scheduleFeedViewController;
     
-    NSMutableArray  *currentNewsFeed;
+    // Operation Queue
+    NSOperationQueue            *operationQueue;
 }
 
-@property (strong, nonatomic)SettingsModel   *settings;
+@property (strong, nonatomic) SettingsModel   *settings;
 
 @end

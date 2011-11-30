@@ -7,29 +7,31 @@
 //
 
 #import "RootViewController.h"
-#import "MainView.h"
+#import "RootView.h"
+#import "SettingsModel.h"
 
 #import "DateAndTimeView.h"
 #import "TemperatureView.h"
 
-#import "SocialMediaView.h"
-#import "NewsFeedView.h"
-#import "ScheduleView.h"
-
-#import "NewsFeedModel.h"
+#import "SocialFeedViewController.h"
+#import "SocialFeedOperation.h"
 #import "SocialFeedModel.h"
-#import "SocialFeedItem.h"
+#import "SocialMediaView.h"
 
-#import "SettingsModel.h"
+#import "NewsFeedViewController.h"
+#import "NewsFeedModel.h"
+#import "NewsFeedView.h"
+
+#import "ScheduleFeedViewController.h"
+#import "ScheduleView.h"
 
 
 @interface RootViewController (PrivateMethods)
-- (void)dateTimeViewUpdate;
-- (void)newsFeedUpdate;
-- (void)socialFeedUpdate;
+- (void)setViewLandscape;
+- (void)setViewPortrait;
 
-- (NSMutableString *)formattedZone:(NSString *)zone;
-- (NSMutableString *)ordinatedDay:(char *)day;
+- (void)initFeedOperations;
+- (void)runFeedOperations;
 @end
 
 
@@ -41,27 +43,19 @@
     self = [super initWithNibName:nil bundle:nil];
     if (self) {
         settings = [[SettingsModel alloc] init];
-        newsFeed = [[NewsFeedModel alloc] initWithRSSFeed:@"http://rss.cnn.com/rss/edition.rss"];
-        [newsFeed load:TTURLRequestCachePolicyNoCache more:NO];
-                        
-        currentNewsFeed = [[NSMutableArray alloc] init];
-        timeZones = [[NSMutableArray alloc] init];
+        
+        // View controllers
+        socialFeedViewController = [[SocialFeedViewController alloc] init];
+        newsFeedViewController = [[NewsFeedViewController alloc] initWithRSSFeed:@"http://rss.cnn.com/rss/edition.rss"];
+        scheduleFeedViewController = [[ScheduleFeedViewController alloc] init];
+        
+        // Concurrency objects
+        operationQueue = [[NSOperationQueue alloc] init];
     }
     
     return self;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)didReceiveMemoryWarning
 {
     // Releases the view if it doesn't have a superview.
@@ -70,54 +64,53 @@
     // Release any cached data, images, etc that aren't in use.
 }
 
+# pragma mark - Key Value Observation
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (void)observeValueForKeyPath:(NSString *)keyPath 
+                      ofObject:(id)object
+                        change:(NSDictionary *)change 
+                       context:(void *)context
+{
+    NSLog(@"Object: %@  keyPath: %@", object, keyPath);
+    if ([keyPath isEqualToString:@"isFinished"] && [object isEqual:socialFeedOper]) {
+        [socialFeedViewController extractData];
+        [object removeObserver:self
+                    forKeyPath:@"isFinished"];
+
+    } else if ([keyPath isEqualToString:@"isFinished"] && [object isEqual:[newsFeedViewController newsFeed]]) {
+        [newsFeedViewController newsFeedUpdate];
+        
+    }
+}
+
+
 #pragma mark - View lifecycle
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)loadView {
-    main_view = [[MainView alloc] init];
-    [main_view setBackgroundColor:[UIColor clearColor]];
-    [self setView:main_view];
+    rootView = [[RootView alloc] init];
+    [self setView:rootView];
     
-    if (([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeLeft) || 
-        ([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeRight)) {
-        [main_view setLandscape];
-    } else {
-        [main_view setPortrait];
-    }
+    [rootView addSubview:[socialFeedViewController view]];
+    [rootView addSubview:[newsFeedViewController view]];
+    [rootView addSubview:[scheduleFeedViewController view]];
+
     
+    UIInterfaceOrientation currentOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if (UIInterfaceOrientationIsLandscape(currentOrientation))
+        [self setViewLandscape];
+    else
+        [self setViewPortrait];
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    
-    dateTimeTimer = [NSTimer scheduledTimerWithTimeInterval:(1.0) 
-                                             target:self 
-                                           selector:@selector(dateTimeViewUpdate) 
-                                           userInfo:nil 
-                                            repeats:YES];
-    
-
-    
-    feedTimer = [NSTimer scheduledTimerWithTimeInterval:(2.0)
-                                             target:self 
-                                               selector:@selector(newsFeedUpdate) 
-                                               userInfo:nil 
-                                                repeats:YES];
-    
-    socialFeedTimer = [NSTimer scheduledTimerWithTimeInterval:(5.0)
-                                                 target:self 
-                                               selector:@selector(socialFeedUpdate) 
-                                               userInfo:nil 
-                                                repeats:YES];
-     
-        
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)viewDidUnload
 {
     [super viewDidUnload];
@@ -125,11 +118,66 @@
     // e.g. self.myOutlet = nil;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)viewDidAppear:(BOOL)animated 
 {    
-    socialFeed = [[SocialFeedModel alloc] initWithAccount:[[settings accounts] objectAtIndex:0]];
+    [self initFeedOperations];
+    updateTimer = [NSTimer timerWithTimeInterval:(30.0) 
+                                          target:self 
+                                        selector:@selector(runFeedOperations) 
+                                        userInfo:nil 
+                                         repeats:YES];
+    
+    [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSRunLoopCommonModes];
+
+
 }
+
+#pragma mark - Data Operations
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (void)initFeedOperations
+{
+    SocialFeedModel *sm = [socialFeedViewController socialFeed];
+    [[socialFeedViewController socialFeed] setAccount:[[settings accounts] objectAtIndex:0]];
+    socialFeedOper = [[SocialFeedOperation alloc] initWithSocialFeed:sm];
+    [socialFeedOper addObserver:self
+                     forKeyPath:@"isFinished" 
+                        options:0
+                        context:nil];
+    [operationQueue addOperation:socialFeedOper];
+    
+    // News Feed Operations
+    NewsFeedModel *nfm = [newsFeedViewController newsFeed];
+    [nfm addObserver:self 
+          forKeyPath:@"isFinished" 
+             options:0 
+             context:nil];
+    [nfm load:TTURLRequestCachePolicyNone more:NO];
+}
+
+
+
+#pragma mark - Timer Actions
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (void)runFeedOperations
+{
+    NSLog(@"Running");
+    // Social Feed Operations
+    if (![socialFeedOper isExecuting]) {
+        SocialFeedModel *sm = [socialFeedViewController socialFeed];
+        socialFeedOper = [[SocialFeedOperation alloc] initWithSocialFeed:sm];
+        [socialFeedOper addObserver:self
+                         forKeyPath:@"isFinished" 
+                            options:0
+                            context:nil];
+        [operationQueue addOperation:socialFeedOper];
+    }
+    if (![[newsFeedViewController newsFeed] isLoading])
+        [[newsFeedViewController newsFeed] load:TTURLRequestCachePolicyNone more:NO];
+}
+
+
 
 #pragma mark - Rotation actions
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -139,162 +187,35 @@
     return YES;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation 
                                 duration:(NSTimeInterval)duration
 {
     if (toInterfaceOrientation == UIInterfaceOrientationPortraitUpsideDown || 
         toInterfaceOrientation == UIInterfaceOrientationPortrait) {
-        [main_view setPortrait];
+        [self setViewPortrait];
     } else
-        [main_view setLandscape];
+        [self setViewLandscape];
     
     [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
-    
-    
 }
 
-#pragma mark - Timer actions
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)dateTimeViewUpdate
+- (void)setViewLandscape 
 {
-    NSDate *now = [NSDate date];
-    NSDateFormatter *currentDate = [[NSDateFormatter alloc] init];
-
-    // Set the main time display
-    NSDateFormatter *currentTime = [[NSDateFormatter alloc] init];
-    currentTime.dateFormat = @"hh:mm a";
-    [[[main_view dateTimeView] mainTime] setText:[currentTime stringFromDate:now]];
+    [[socialFeedViewController socialFeedView] landscapeView];
+    [[newsFeedViewController newsFeedView] landscapeView];
+    [[scheduleFeedViewController scheduleView] landscapeView];
     
-    // Set the main date display
-    currentDate.dateFormat = @"d";
-    char ordVal = [[currentDate stringFromDate:now] length] < 2 ? [[currentDate stringFromDate:now] characterAtIndex:0] : 
-                                                              [[currentDate stringFromDate:now] characterAtIndex:1];
-    
-    currentDate.dateFormat = [NSString stringWithFormat:@"EEE • %@ 'of' MMMM • YYYY", [self ordinatedDay:ordVal]];
-    [[[main_view dateTimeView] mainDate] setText:[currentDate stringFromDate:now]];
-    
-    
-    // Set the additional time displays
-    [timeZones addObject:[NSTimeZone timeZoneWithName:@"Asia/Tokyo"]];
-    [timeZones addObject:[NSTimeZone timeZoneWithName:@"Australia/Sydney"]];
-    [timeZones addObject:[NSTimeZone timeZoneWithName:@"America/New_York"]];
-
-    int count = 0;
-    for (NSTimeZone *zone in timeZones) {
-        if (count < 3) {
-            [currentDate setTimeZone:zone];
-            currentDate.dateFormat = @"d";
-        
-            currentDate.dateFormat = @"h:mm a • EEE • dd/MM/yyyy • ";
-            [[[[main_view dateTimeView] worldTimes] objectAtIndex:count] setText:[NSString stringWithFormat:@"%@ %@", 
-                                                        [currentDate stringFromDate:now], 
-                                                        [self formattedZone:[zone name]]]];
-            count++;
-        }   
-    }
-    
+    [rootView setLandscape];
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-- (void)newsFeedUpdate
+- (void)setViewPortrait
 {
-    if ([currentNewsFeed count] == 0) {
-        [currentNewsFeed addObjectsFromArray:[newsFeed items]];
-        for (NSDictionary *item in [newsFeed items]) {
-            NSDictionary *titleElement = [item objectForKey:@"title"];
-            NSDictionary *descriptionElement = [item objectForKey:@"description"];
-            //NSDictionary *linkElement = [item objectForKey:@"link"];
+    [[socialFeedViewController socialFeedView] portraitView];
+    [[newsFeedViewController newsFeedView] portraitView];
+    [[scheduleFeedViewController scheduleView] portraitView];
 
-            [[main_view newsFeedView] addNewEntry:[descriptionElement objectForKey:@"___Entity_Value___"]
-                                          heading:[titleElement objectForKey:@"___Entity_Value___"]];
-            
-        }
-    } else if (![currentNewsFeed isEqualToArray:[newsFeed items]]) { 
-        for (int i = ([[newsFeed items] count] - 1); i >= 0; i--) {
-            NSDictionary *item = [[newsFeed items] objectAtIndex: i];
-            
-            if ([[[currentNewsFeed objectAtIndex:0] objectForKey:@"pubDate"] compare:[item objectForKey:@"pubDate"]] 
-                != NSOrderedSame) {
-                [currentNewsFeed removeLastObject];
-                [currentNewsFeed insertObject:item atIndex:0];
-                
-                NSDictionary *titleElement = [item objectForKey:@"title"];
-                NSDictionary *descriptionElement = [item objectForKey:@"description"];
-                
-                [[main_view newsFeedView] addNewEntry:[descriptionElement objectForKey:@"___Entity_Value___"]
-                                              heading:[titleElement objectForKey:@"___Entity_Value___"]];
-                
-            }
-        }
-    }
+    [rootView setPortrait];
 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-- (void)socialFeedUpdate
-{
-    [socialFeed fetchTimeline];
-    if ([socialFeed isUpdated]) {
-        for (id item in [socialFeed currentPosts]) {
-            NSLog(@"%@", [item tweet]);
-            TWRequest *fetchUserImageRequest = [[TWRequest alloc] 
-                                                initWithURL:[item profileImageURL]
-                                                parameters:nil
-                                                requestMethod:TWRequestMethodGET];
-            [fetchUserImageRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
-                if ([urlResponse statusCode] == 200) {
-                    UIImage *profileImage = [UIImage imageWithData:responseData];
-                    [[main_view socialMediaView] addNewPost:[item tweet] withUsername:[item username] avatar:profileImage];                    
-                }
-            }];
-        }
-        [main_view reloadView];
-    }
-}
-
-
-
-#pragma mark - Date Formatting
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSString *)ordinatedDay:(char *)ordVal
-{    
-    NSNumberFormatter * day = [[NSNumberFormatter alloc] init];
-    [day setNumberStyle:NSNumberFormatterDecimalStyle];
-    NSNumber * dayval = [day numberFromString:[NSString stringWithFormat:@"%c",ordVal]];
-    
-    NSString *newDayFormat = nil;
-    switch ([dayval intValue])
-    {
-        case 1:
-            newDayFormat = [NSString stringWithString:@"d'st'"];
-            break;
-        case 2:
-            newDayFormat = [NSString stringWithString:@"d'nd'"];
-            break;
-        case 3:
-            newDayFormat = [NSString stringWithString:@"d'rd'"];
-            break;
-        default:
-            newDayFormat = [NSString stringWithString:@"d'th'"];
-            break;
-    }
-    
-    return newDayFormat;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-- (NSMutableString *)formattedZone:(NSString *)zone
-{
-    NSMutableString *city = [NSMutableString stringWithString:[[zone componentsSeparatedByString:@"/"] lastObject]];
-    [city replaceOccurrencesOfString:@"_" 
-                          withString:@" " 
-                             options:0
-                               range:NSMakeRange(0, [city length])];
-    
-    return city;
-}
-
 
 @end

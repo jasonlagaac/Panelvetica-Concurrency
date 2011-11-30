@@ -6,7 +6,7 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "MainView.h"
+#import "RootView.h"
 #import "TemperatureView.h"
 #import "DateAndTimeView.h"
 #import "ScheduleView.h"
@@ -14,29 +14,12 @@
 #import "SocialMediaView.h"
 
 
-@implementation MainView
-
-@synthesize  dateTimeView, newsFeedView, socialMediaView, scheduleView;
+@implementation RootView
 
 - (id)init
 {
     CGRect frame  = [self bounds];
     self = [super initWithFrame:frame];
-        
-    tempView = [[TemperatureView alloc] init];
-    [self addSubview:tempView];
-    
-    dateTimeView = [[DateAndTimeView alloc] init];
-    [self addSubview:dateTimeView];
-    
-    scheduleView = [[ScheduleView alloc] init];
-    [self addSubview:scheduleView];
-    
-    newsFeedView = [[NewsFeedView alloc] init];
-    [self addSubview:newsFeedView];
-    
-    socialMediaView = [[SocialMediaView alloc] init];
-    [self addSubview:socialMediaView];
     
     settingsButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [settingsButton setImage:[UIImage imageNamed:@"settings.png"] forState:UIControlStateNormal];
@@ -56,12 +39,6 @@
 
 - (void)setLandscape 
 {
-    [tempView landscapeView];
-    [dateTimeView landscapeView];
-    
-    [socialMediaView landscapeView];
-    [scheduleView landscapeView];
-    [newsFeedView landscapeView];
     
     CGRect screen = [[UIScreen mainScreen] bounds];
     settingsButton.frame = CGRectMake((screen.size.height - 50), (screen.size.width - 50), 50, 50);
@@ -73,12 +50,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)setPortrait
 {
-    [tempView portraitView];
-    [dateTimeView portraitView];
-    
-    [socialMediaView portraitView];
-    [scheduleView portraitView];
-    [newsFeedView portraitView];
     
     CGRect screen = [[UIScreen mainScreen] bounds];
     settingsButton.frame = CGRectMake((screen.size.width - 50), (screen.size.height - 50), 50, 50);

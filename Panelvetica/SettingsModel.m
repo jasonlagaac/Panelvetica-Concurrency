@@ -25,9 +25,7 @@
             ACAccountType *accountTypeTwitter = [self.accountStore accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
             [self.accountStore requestAccessToAccountsWithType:accountTypeTwitter withCompletionHandler:^(BOOL granted, NSError *error) {
                 if(granted) {
-                    dispatch_sync(dispatch_get_main_queue(), ^{
                         self.accounts = [self.accountStore accountsWithAccountType:accountTypeTwitter];
-                    });
                 }
             }];
         }

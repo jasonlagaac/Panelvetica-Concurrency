@@ -100,7 +100,11 @@
         [self landscapeView];
     else
         [self portraitView];
+    
+    [self setNeedsDisplay];
 }
+
+
 
 
 
