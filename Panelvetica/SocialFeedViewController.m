@@ -34,7 +34,7 @@
     return self;
 }
 
--(void)extractData {
+-(void)feedUpdate {
     NSArray *recentPosts = [[[[[self socialFeed]timeline] subarrayWithRange:NSMakeRange(0, 4)] reverseObjectEnumerator] allObjects];   
     
     if (currentPosts == nil) {

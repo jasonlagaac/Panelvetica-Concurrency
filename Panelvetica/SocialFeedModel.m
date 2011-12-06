@@ -58,7 +58,6 @@
     
 }
 
-
 - (BOOL)isFinished
 {
     return finished;
@@ -68,6 +67,9 @@
 {
     return response;
 }
+
+
+
  
      
 @end

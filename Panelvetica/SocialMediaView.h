@@ -9,9 +9,7 @@
 #import "FeedView.h"
 
 @interface SocialMediaView : FeedView
-{
-    UITextView  *debugView;
-}
+
 
 @property (nonatomic, strong)  UITextView  *debugView;
 

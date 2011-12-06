@@ -9,6 +9,9 @@
 #import "NewsFeedModel.h"
 #import "extThree20XML/extThree20XML.h"
 
+@interface NewsFeedModel (Private)
+NSComparisonResult compareDate(id item1, id item2, void *context);
+@end
 
 @implementation NewsFeedModel
 @synthesize items, rssFeed;
@@ -48,10 +51,12 @@
 
 // Our Request has finished, time to parse what is stored in our response
 - (void)requestDidFinishLoad:(TTURLRequest *)request {    
-    NSMutableArray *feedItems = [[NSMutableArray alloc] init];
-    
-    self.items = nil;
-    self.items = [[NSMutableArray alloc] init];
+    NSArray *feedItems = nil;
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeStyle:NSDateFormatterFullStyle];
+    [dateFormatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss zzz"];
+    NSLocale *enLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en"];
+    [dateFormatter setLocale:enLocale];
     
     TTURLXMLResponse *response = (TTURLXMLResponse*) request.response;
     TTDASSERT([response.rootObject isKindOfClass:[NSDictionary class]]);
@@ -60,32 +65,42 @@
     TTDASSERT([[feed objectForKey:@"channel"] isKindOfClass:[NSDictionary class]]);
     
     NSDictionary *channel = [feed objectForKey:@"channel"];
-    NSObject *channelItems = [channel objectForKey:@"item"];    
+    NSObject *channelItems = [channel objectForKey:@"item"]; 
+    NSArray *unsortedItems = (NSArray*) channelItems;
     
-    if ([channelItems isKindOfClass:[NSArray class]]) {
-        for (NSDictionary *item in (NSArray*) channelItems) {
-            NSDictionary *pubDate = [item objectForKey:@"pubDate"];
-            
-            // Format the Recieved String into a Date
-            NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
-            [dateFormatter setTimeStyle:NSDateFormatterFullStyle];
-            [dateFormatter setDateFormat:@"EEE, dd MMMM yyyy HH:mm:ss ZZ"];
-            NSDate* date = [dateFormatter dateFromString:[pubDate objectForKey:@"___Entity_Value___"]];
-            [item setValue:date forKey:@"pubDate"];
-            
+    // Sort the objects by date in chronological order. Fucking RSS feeds don't do that by default. 
+    NSSortDescriptor *itemSort = [[NSSortDescriptor alloc] initWithKey:@"pubDate" ascending:NO comparator:^NSComparisonResult(id item1, id item2){
+        NSDate  *objDate1  = [dateFormatter dateFromString:[item1 objectForKey:@"___Entity_Value___"]];
+        NSDate  *objDate2 = [dateFormatter dateFromString:[item2 objectForKey:@"___Entity_Value___"]];
+        
+        return [objDate1 compare:objDate2];
+    }];
+    
+    NSArray *sortDesciptors = [NSArray arrayWithObject:itemSort];
+    feedItems = [unsortedItems sortedArrayUsingDescriptors:sortDesciptors];
+    items = [[[feedItems subarrayWithRange:NSMakeRange(0, 4)] reverseObjectEnumerator] allObjects];
+    
+    // Condense the previews to the articles down to 20 words to make it look neater.
+    for (id item in items) {
+        NSDictionary *description = [item objectForKey:@"description"];
+        
+        NSString *previewString = [NSString stringWithString:[description objectForKey:@"___Entity_Value___"]];
+        NSArray *previewObjects = [previewString componentsSeparatedByString:@" "];
+        NSString *previewCondensed = [NSString stringWithString:@""];
+        
+        if ([previewObjects count] > 18) {
+            for (int i = 0; i < 18; i++) {
+                
+                if (i < 17) 
+                    previewCondensed = [previewCondensed stringByAppendingFormat:[NSString stringWithFormat:@"%@ ", [previewObjects objectAtIndex:i]]];
+                else 
+                    previewCondensed = [previewCondensed stringByAppendingFormat:@"..."];
+            }
 
-            [feedItems addObject:item];
+            [description setValue:[TTStyledText textFromXHTML:previewCondensed]  forKey:@"___Entity_Value___"];
+        } else {
+            [description  setValue:[TTStyledText textFromXHTML:previewString]  forKey:@"___Entity_Value___"];
         }
-    }
-    
-    NSSortDescriptor *sortDescriptor;
-    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pubDate" ascending:NO];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-
-    NSArray *sortedFeedItems = [feedItems sortedArrayUsingDescriptors:sortDescriptors];
-    
-    for (int i = 0; i < TOTAL_NEW_POSTS; i++) {
-        [items addObject:[sortedFeedItems objectAtIndex:i]];
     }
     
     [super requestDidFinishLoad:request];	
@@ -99,5 +114,6 @@
 {
     return finished;
 }
+
 
 @end

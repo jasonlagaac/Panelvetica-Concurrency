@@ -15,25 +15,30 @@
 @class SocialFeedViewController;
 @class SocialFeedOperation;
 
-@class NewsFeedViewController;
-
 @class ScheduleFeedViewController;
+@class ScheduleFeedOperation;
+
+@class NewsFeedViewController;
+@class DateTimeViewController;
 
 @interface RootViewController : UIViewController 
 {
     RootView                    *rootView;
     SettingsModel               *settings;
     NSTimer                     *updateTimer;
+    NSTimer                     *dateTimeTimer;
     
     SocialFeedViewController    *socialFeedViewController;
     SocialFeedOperation         *socialFeedOper;
     
+    ScheduleFeedViewController  *scheduleFeedViewController;
+    ScheduleFeedOperation       *scheduleFeedOper;
+    
     // NOTE: There is no NewsFeedOperation as TTURLRequest 
     // already does operations concurrently.
     NewsFeedViewController      *newsFeedViewController;
-    
-    ScheduleFeedViewController  *scheduleFeedViewController;
-    
+    DateTimeViewController      *dateTimeViewController;
+
     // Operation Queue
     NSOperationQueue            *operationQueue;
 }

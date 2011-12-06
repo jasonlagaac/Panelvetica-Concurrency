@@ -9,12 +9,19 @@
 #import <UIKit/UIKit.h>
 
 @class ScheduleView;
+@class ScheduleFeedModel;
 
 @interface ScheduleFeedViewController : UIViewController
 {
-    ScheduleView    *scheduleView;
+    ScheduleView        *scheduleView;
+    ScheduleFeedModel   *scheduleFeed;
+    NSMutableArray      *upcomingEvents;
 }
 
-@property (nonatomic, strong) ScheduleView *scheduleView;
+@property (nonatomic, strong) ScheduleView      *scheduleView;
+@property (nonatomic, strong) ScheduleFeedModel *scheduleFeed;
+
+- (void)feedUpdate;
+
 
 @end

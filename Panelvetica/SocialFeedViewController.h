@@ -23,6 +23,6 @@
 @property (nonatomic, strong) SocialMediaView  *socialFeedView;
 @property (nonatomic, strong) SocialFeedModel  *socialFeed;
 
--(void)extractData;
+-(void)feedUpdate;
 
 @end

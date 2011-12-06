@@ -28,11 +28,12 @@
             heading:(NSString *)heading
 {    
     TTStyledTextLabel *newLbl = [[TTStyledTextLabel alloc] initWithFrame:CGRectZero];
-    if ([content length] > 130)
-        [newLbl setHtml:[NSString stringWithFormat:@"<b>%@</b> %@ ...", heading, [content substringToIndex:130]]];
-    else
-        [newLbl setHtml:[NSString stringWithFormat:@"<b>%@</b> %@", heading, content]];
-         
+    
+
+    NSString *post_string = [NSString stringWithFormat:@"<b>%@</b> %@", heading, content];
+    
+    [newLbl setHtml:post_string];
+
     [self removeOldestItem];
     [feedText insertObject:newLbl atIndex:0];
     [self addSubview:newLbl];

@@ -20,8 +20,6 @@
     self = [self initWithFrame:CGRectZero];
     
     [self setHeader:[UIImage imageNamed:@"socialfeed.png"]];
-    debugView = [[UITextView alloc] initWithFrame:CGRectMake(60, 0, 300, 430)];
-    [self addSubview:debugView];
     
     return self;
 }
@@ -36,6 +34,8 @@
 {
     NSString *post_string = [NSString stringWithFormat:@"<b>%@</b> •  %@", user, post];
     post_string = [post_string stringByReplacingOccurrencesOfString:@"&" withString:@"&amp;"];
+    post_string = [post_string stringByReplacingOccurrencesOfString:@"\'" withString:@"&apos;"];
+
     TTStyledTextLabel *newLbl = [[TTStyledTextLabel alloc] initWithFrame:CGRectZero];
 
     [newLbl setHtml:post_string];

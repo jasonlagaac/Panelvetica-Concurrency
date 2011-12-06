@@ -13,14 +13,13 @@
 @interface NewsFeedModel : TTURLRequestModel
 {
     NSString               *rssFeed;
-    NSMutableArray         *items;
+    NSArray                *items;
     
     BOOL                   finished;
 }
 
 @property (nonatomic, strong) NSArray *items;
 @property (nonatomic, strong) NSString *rssFeed;
-
 
 - (id)initWithRSSFeed:(NSString*)rssFeed;
 - (BOOL)isFinished;

@@ -21,6 +21,9 @@
 		B83310831468F1130069B78A /* avatar.png in Resources */ = {isa = PBXBuildFile; fileRef = B83310821468F1130069B78A /* avatar.png */; };
 		B83ED36C1476963C005D0847 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B83ED36B1476963C005D0847 /* Twitter.framework */; };
 		B83ED3771476A306005D0847 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B83ED3761476A306005D0847 /* Accounts.framework */; };
+		B857F76C148C687A00DB365F /* ScheduleFeedOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B857F76B148C687A00DB365F /* ScheduleFeedOperation.m */; };
+		B8A065551489F04F00017900 /* DateTimeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B8A065541489F04F00017900 /* DateTimeViewController.m */; };
+		B8A06558148BC94700017900 /* ScheduleFeedModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B8A06557148BC94700017900 /* ScheduleFeedModel.m */; };
 		B8C98EDF146BF987001F7936 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8C98EDE146BF986001F7936 /* EventKit.framework */; };
 		B8C98EED1470CD70001F7936 /* reload.png in Resources */ = {isa = PBXBuildFile; fileRef = B8C98EE91470CD70001F7936 /* reload.png */; };
 		B8C98EEE1470CD70001F7936 /* reload-pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = B8C98EEA1470CD70001F7936 /* reload-pressed.png */; };
@@ -33,6 +36,7 @@
 		B8D3CFFB147B915C00174DED /* SettingsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B8D3CFFA147B915C00174DED /* SettingsModel.m */; };
 		B8DA6B651484A85A00204F19 /* CustomOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B8DA6B641484A85A00204F19 /* CustomOperation.m */; };
 		B8DBF9D1147B290400C72FC5 /* SocialFeedModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B8DBF9D0147B290400C72FC5 /* SocialFeedModel.m */; };
+		B8DFA018148E15A7008709C2 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8DFA017148E15A7008709C2 /* CoreLocation.framework */; };
 		B8F4D6931463C57C00B29353 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8F4D6921463C57C00B29353 /* UIKit.framework */; };
 		B8F4D6951463C57C00B29353 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8F4D6941463C57C00B29353 /* Foundation.framework */; };
 		B8F4D6971463C57C00B29353 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B8F4D6961463C57C00B29353 /* CoreGraphics.framework */; };
@@ -268,6 +272,12 @@
 		B83310821468F1130069B78A /* avatar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = avatar.png; sourceTree = "<group>"; };
 		B83ED36B1476963C005D0847 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
 		B83ED3761476A306005D0847 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		B857F76A148C687A00DB365F /* ScheduleFeedOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScheduleFeedOperation.h; sourceTree = "<group>"; };
+		B857F76B148C687A00DB365F /* ScheduleFeedOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScheduleFeedOperation.m; sourceTree = "<group>"; };
+		B8A065531489F04F00017900 /* DateTimeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DateTimeViewController.h; sourceTree = "<group>"; };
+		B8A065541489F04F00017900 /* DateTimeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DateTimeViewController.m; sourceTree = "<group>"; };
+		B8A06556148BC94700017900 /* ScheduleFeedModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScheduleFeedModel.h; sourceTree = "<group>"; };
+		B8A06557148BC94700017900 /* ScheduleFeedModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScheduleFeedModel.m; sourceTree = "<group>"; };
 		B8C98EDE146BF986001F7936 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		B8C98EE91470CD70001F7936 /* reload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = reload.png; sourceTree = "<group>"; };
 		B8C98EEA1470CD70001F7936 /* reload-pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "reload-pressed.png"; sourceTree = "<group>"; };
@@ -287,6 +297,7 @@
 		B8DA6B641484A85A00204F19 /* CustomOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomOperation.m; sourceTree = "<group>"; };
 		B8DBF9CF147B290400C72FC5 /* SocialFeedModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SocialFeedModel.h; sourceTree = "<group>"; };
 		B8DBF9D0147B290400C72FC5 /* SocialFeedModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SocialFeedModel.m; sourceTree = "<group>"; };
+		B8DFA017148E15A7008709C2 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		B8F4D68E1463C57C00B29353 /* Panelvetica.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Panelvetica.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8F4D6921463C57C00B29353 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B8F4D6941463C57C00B29353 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -340,10 +351,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B8DFA018148E15A7008709C2 /* CoreLocation.framework in Frameworks */,
+				B8C98EDF146BF987001F7936 /* EventKit.framework in Frameworks */,
 				B83ED3771476A306005D0847 /* Accounts.framework in Frameworks */,
 				B83ED36C1476963C005D0847 /* Twitter.framework in Frameworks */,
 				B82227541473817200BBAB08 /* libextThree20XML.a in Frameworks */,
-				B8C98EDF146BF987001F7936 /* EventKit.framework in Frameworks */,
 				3201088596B4756681693705 /* libThree20UICommon.a in Frameworks */,
 				320D7DCCE32703ACAB9A45E5 /* libThree20.a in Frameworks */,
 				320A737074758E53BA54BE95 /* libThree20UINavigator.a in Frameworks */,
@@ -439,6 +451,8 @@
 		B8222713147376B100BBAB08 /* Feed Models */ = {
 			isa = PBXGroup;
 			children = (
+				B8A06556148BC94700017900 /* ScheduleFeedModel.h */,
+				B8A06557148BC94700017900 /* ScheduleFeedModel.m */,
 				B82227141473771200BBAB08 /* NewsFeedModel.h */,
 				B82227151473771200BBAB08 /* NewsFeedModel.m */,
 				B8DBF9CF147B290400C72FC5 /* SocialFeedModel.h */,
@@ -463,21 +477,41 @@
 				B8CA36B01481E2A1004C9C38 /* SocialFeedOperation.m */,
 				B8DA6B631484A85A00204F19 /* CustomOperation.h */,
 				B8DA6B641484A85A00204F19 /* CustomOperation.m */,
+				B857F76A148C687A00DB365F /* ScheduleFeedOperation.h */,
+				B857F76B148C687A00DB365F /* ScheduleFeedOperation.m */,
 			);
 			name = Operations;
 			sourceTree = "<group>";
 		};
-		B8CA36BA148365D0004C9C38 /* View Controllers */ = {
+		B8A065511489CF2E00017900 /* Feed View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				B8F4D6FD1463C65C00B29353 /* RootViewController.h */,
-				B8F4D6FE1463C65C00B29353 /* RootViewController.m */,
 				B8CA36BB14836760004C9C38 /* SocialFeedViewController.h */,
 				B8CA36BC14836760004C9C38 /* SocialFeedViewController.m */,
 				B8CA36C1148367D2004C9C38 /* ScheduleFeedViewController.h */,
 				B8CA36C2148367D2004C9C38 /* ScheduleFeedViewController.m */,
 				B8CA36BE1483677E004C9C38 /* NewsFeedViewController.h */,
 				B8CA36BF1483677E004C9C38 /* NewsFeedViewController.m */,
+			);
+			name = "Feed View Controllers";
+			sourceTree = "<group>";
+		};
+		B8A065521489D33A00017900 /* Information View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B8A065531489F04F00017900 /* DateTimeViewController.h */,
+				B8A065541489F04F00017900 /* DateTimeViewController.m */,
+			);
+			name = "Information View Controllers";
+			sourceTree = "<group>";
+		};
+		B8CA36BA148365D0004C9C38 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B8A065521489D33A00017900 /* Information View Controllers */,
+				B8A065511489CF2E00017900 /* Feed View Controllers */,
+				B8F4D6FD1463C65C00B29353 /* RootViewController.h */,
+				B8F4D6FE1463C65C00B29353 /* RootViewController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -495,6 +529,8 @@
 		B8DA6B5E1483E8B000204F19 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B8F4D7011463C65C00B29353 /* RootView.h */,
+				B8F4D7021463C65C00B29353 /* RootView.m */,
 				B8F4D7101463C69200B29353 /* Feed Views */,
 				B8F4D7061463C66E00B29353 /* Information Views */,
 			);
@@ -504,8 +540,8 @@
 		B8F4D6831463C57900B29353 = {
 			isa = PBXGroup;
 			children = (
+				B8DFA017148E15A7008709C2 /* CoreLocation.framework */,
 				B8F4D6981463C57C00B29353 /* Panelvetica */,
-				B8F4D71D1463C6B800B29353 /* Resources */,
 				B8F4D6B01463C57C00B29353 /* PanelveticaTests */,
 				B8F4D6911463C57C00B29353 /* Frameworks */,
 				B8F4D68F1463C57C00B29353 /* Products */,
@@ -547,6 +583,7 @@
 		B8F4D6981463C57C00B29353 /* Panelvetica */ = {
 			isa = PBXGroup;
 			children = (
+				B8F4D71D1463C6B800B29353 /* Resources */,
 				B8DA6B5E1483E8B000204F19 /* Views */,
 				B8CA36BA148365D0004C9C38 /* View Controllers */,
 				B88FEB761480F2BB007948CF /* Operations */,
@@ -598,8 +635,6 @@
 				B8F4D70A1463C68C00B29353 /* TemperatureView.m */,
 				B8F4D70B1463C68C00B29353 /* DateAndTimeView.h */,
 				B8F4D70C1463C68C00B29353 /* DateAndTimeView.m */,
-				B8F4D7011463C65C00B29353 /* RootView.h */,
-				B8F4D7021463C65C00B29353 /* RootView.m */,
 			);
 			name = "Information Views";
 			sourceTree = "<group>";
@@ -632,7 +667,6 @@
 				B8F4D71E1463C6CE00B29353 /* Header */,
 			);
 			name = Resources;
-			path = Panelvetica;
 			sourceTree = "<group>";
 		};
 		B8F4D71E1463C6CE00B29353 /* Header */ = {
@@ -972,6 +1006,9 @@
 				B8CA36C01483677E004C9C38 /* NewsFeedViewController.m in Sources */,
 				B8CA36C3148367D2004C9C38 /* ScheduleFeedViewController.m in Sources */,
 				B8DA6B651484A85A00204F19 /* CustomOperation.m in Sources */,
+				B8A065551489F04F00017900 /* DateTimeViewController.m in Sources */,
+				B8A06558148BC94700017900 /* ScheduleFeedModel.m in Sources */,
+				B857F76C148C687A00DB365F /* ScheduleFeedOperation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

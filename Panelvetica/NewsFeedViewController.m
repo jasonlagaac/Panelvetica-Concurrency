@@ -10,6 +10,11 @@
 #import "NewsFeedView.h"
 #import "NewsFeedModel.h"
 
+@interface NewsFeedViewController (Private)
+- (void)reloadFeed;
+@end
+
+
 @implementation NewsFeedViewController
 @synthesize newsFeedView, newsFeed;
 
@@ -35,32 +40,42 @@
     
     if ([currentNewsFeed count] == 0) {
         [currentNewsFeed addObjectsFromArray:[newsFeed items]];
-        for (NSDictionary *item in [newsFeed items]) {
-            NSDictionary *titleElement = [item objectForKey:@"title"];
-            NSDictionary *descriptionElement = [item objectForKey:@"description"];
-            
-            [[self newsFeedView] addNewEntry:[descriptionElement objectForKey:@"___Entity_Value___"]
-                                          heading:[titleElement objectForKey:@"___Entity_Value___"]];
-            
-        }
+        [self reloadFeed];
     } else if (![currentNewsFeed isEqualToArray:[newsFeed items]]) { 
-        NSLog(@"here!!!");
-        for (int i = ([[newsFeed items] count] - 1); i >= 0; i--) {
-            NSDictionary *item = [[newsFeed items] objectAtIndex: i];
-            
-            if ([[[currentNewsFeed objectAtIndex:0] objectForKey:@"pubDate"] compare:[item objectForKey:@"pubDate"]] 
-                != NSOrderedSame) {
-                [currentNewsFeed removeLastObject];
-                [currentNewsFeed insertObject:item atIndex:0];
-                
-                NSDictionary *titleElement = [item objectForKey:@"title"];
-                NSDictionary *descriptionElement = [item objectForKey:@"description"];
-                
-                [[self newsFeedView] addNewEntry:[descriptionElement objectForKey:@"___Entity_Value___"]
-                                              heading:[titleElement objectForKey:@"___Entity_Value___"]];
-                
-            }
+        int currentTopPos = 0;
+        while (currentTopPos < 4) {
+            if ([[[newsFeed items] objectAtIndex:0] isEqual:[currentNewsFeed objectAtIndex:currentTopPos]])
+                break;
+            currentTopPos++;
         }
+        
+        if (currentTopPos == 4) {
+            [self reloadFeed];
+        } else {
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                for (int i = 0; i < currentTopPos; i++){
+                    id item = [[newsFeed items] objectAtIndex:i];
+                    
+                    NSDictionary *titleElement = [item objectForKey:@"title"];
+                    NSDictionary *descriptionElement = [item objectForKey:@"description"];
+                    
+                    [[self newsFeedView] addNewEntry:[descriptionElement objectForKey:@"___Entity_Value___"]
+                                             heading:[titleElement objectForKey:@"___Entity_Value___"]];
+                }
+            });
+        }
+    }
+}
+
+- (void)reloadFeed
+{
+    for (NSDictionary *item in [newsFeed items]) {
+        NSDictionary *titleElement = [item objectForKey:@"title"];
+        NSDictionary *descriptionElement = [item objectForKey:@"description"];
+        
+        [[self newsFeedView] addNewEntry:[descriptionElement objectForKey:@"___Entity_Value___"]
+                                 heading:[titleElement objectForKey:@"___Entity_Value___"]];
+        
     }
 }
 

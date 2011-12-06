@@ -10,7 +10,9 @@
 #import "RootView.h"
 #import "SettingsModel.h"
 
+#import "DateTimeViewController.h"
 #import "DateAndTimeView.h"
+
 #import "TemperatureView.h"
 
 #import "SocialFeedViewController.h"
@@ -23,6 +25,8 @@
 #import "NewsFeedView.h"
 
 #import "ScheduleFeedViewController.h"
+#import "ScheduleFeedModel.h"
+#import "ScheduleFeedOperation.h"
 #import "ScheduleView.h"
 
 
@@ -48,6 +52,7 @@
         socialFeedViewController = [[SocialFeedViewController alloc] init];
         newsFeedViewController = [[NewsFeedViewController alloc] initWithRSSFeed:@"http://rss.cnn.com/rss/edition.rss"];
         scheduleFeedViewController = [[ScheduleFeedViewController alloc] init];
+        dateTimeViewController = [[DateTimeViewController alloc] init];
         
         // Concurrency objects
         operationQueue = [[NSOperationQueue alloc] init];
@@ -74,13 +79,15 @@
 {
     NSLog(@"Object: %@  keyPath: %@", object, keyPath);
     if ([keyPath isEqualToString:@"isFinished"] && [object isEqual:socialFeedOper]) {
-        [socialFeedViewController extractData];
+        [socialFeedViewController feedUpdate];
         [object removeObserver:self
                     forKeyPath:@"isFinished"];
 
     } else if ([keyPath isEqualToString:@"isFinished"] && [object isEqual:[newsFeedViewController newsFeed]]) {
         [newsFeedViewController newsFeedUpdate];
         
+    } else if ([keyPath isEqualToString:@"isFinished"] && [object isEqual:scheduleFeedOper]) {
+        [scheduleFeedViewController feedUpdate];
     }
 }
 
@@ -95,6 +102,7 @@
     [rootView addSubview:[socialFeedViewController view]];
     [rootView addSubview:[newsFeedViewController view]];
     [rootView addSubview:[scheduleFeedViewController view]];
+    [rootView addSubview:[dateTimeViewController view]];
 
     
     UIInterfaceOrientation currentOrientation = [[UIApplication sharedApplication] statusBarOrientation];
@@ -108,6 +116,22 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [self initFeedOperations];
+    updateTimer = [NSTimer timerWithTimeInterval:(30.0) 
+                                          target:self 
+                                        selector:@selector(runFeedOperations) 
+                                        userInfo:nil 
+                                         repeats:YES];
+    
+    dateTimeTimer = [NSTimer timerWithTimeInterval:(1.0) 
+                                            target:dateTimeViewController 
+                                          selector:@selector(dateTimeViewUpdate) 
+                                          userInfo:nil 
+                                           repeats:YES];
+    
+    [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSRunLoopCommonModes];
+    [[NSRunLoop currentRunLoop] addTimer:dateTimeTimer forMode:NSRunLoopCommonModes];
 }
 
 
@@ -118,17 +142,7 @@
     // e.g. self.myOutlet = nil;
 }
 
-- (void)viewDidAppear:(BOOL)animated 
-{    
-    [self initFeedOperations];
-    updateTimer = [NSTimer timerWithTimeInterval:(30.0) 
-                                          target:self 
-                                        selector:@selector(runFeedOperations) 
-                                        userInfo:nil 
-                                         repeats:YES];
-    
-    [[NSRunLoop currentRunLoop] addTimer:updateTimer forMode:NSRunLoopCommonModes];
-
+- (void)viewWillAppear:(BOOL)animated {
 
 }
 
@@ -137,6 +151,7 @@
 
 - (void)initFeedOperations
 {
+    // Social Feed Operations
     SocialFeedModel *sm = [socialFeedViewController socialFeed];
     [[socialFeedViewController socialFeed] setAccount:[[settings accounts] objectAtIndex:0]];
     socialFeedOper = [[SocialFeedOperation alloc] initWithSocialFeed:sm];
@@ -145,6 +160,16 @@
                         options:0
                         context:nil];
     [operationQueue addOperation:socialFeedOper];
+    
+    // Social Feed Operations
+    ScheduleFeedModel *sfm = [scheduleFeedViewController scheduleFeed];
+    scheduleFeedOper = [[ScheduleFeedOperation alloc] initWithScheduleFeed:sfm];
+    [scheduleFeedOper addObserver:self
+                     forKeyPath:@"isFinished" 
+                        options:0
+                        context:nil];
+    [operationQueue addOperation:scheduleFeedOper];
+
     
     // News Feed Operations
     NewsFeedModel *nfm = [newsFeedViewController newsFeed];
@@ -173,6 +198,19 @@
                             context:nil];
         [operationQueue addOperation:socialFeedOper];
     }
+    
+    // Schedule Feed Operation
+    if (![scheduleFeedOper isExecuting]) {
+        ScheduleFeedModel *sfm = [scheduleFeedViewController scheduleFeed];
+        scheduleFeedOper = [[ScheduleFeedOperation alloc] initWithScheduleFeed:sfm];
+        [scheduleFeedOper addObserver:self
+                         forKeyPath:@"isFinished" 
+                            options:0
+                            context:nil];
+        [operationQueue addOperation:scheduleFeedOper];
+    }
+    
+    // News Feed Operation
     if (![[newsFeedViewController newsFeed] isLoading])
         [[newsFeedViewController newsFeed] load:TTURLRequestCachePolicyNone more:NO];
 }
@@ -205,6 +243,7 @@
     [[socialFeedViewController socialFeedView] landscapeView];
     [[newsFeedViewController newsFeedView] landscapeView];
     [[scheduleFeedViewController scheduleView] landscapeView];
+    [[dateTimeViewController dateTimeView] landscapeView];
     
     [rootView setLandscape];
 }
@@ -214,6 +253,8 @@
     [[socialFeedViewController socialFeedView] portraitView];
     [[newsFeedViewController newsFeedView] portraitView];
     [[scheduleFeedViewController scheduleView] portraitView];
+    [[dateTimeViewController dateTimeView] portraitView];
+
 
     [rootView setPortrait];
 }

@@ -15,4 +15,8 @@
 - (void)addEvent:(NSString *)event 
             time:(NSString *)time 
         location:(NSString *)location;
+
+- (void)removeObjectAtIndex:(int)index;
+- (void)flushFeed;
+
 @end

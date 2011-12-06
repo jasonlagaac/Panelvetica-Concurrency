@@ -84,11 +84,21 @@
 #pragma mark -
 #pragma mark Orientation actions
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)removeOldestItem {
+- (void)removeOldestItem 
+{
     if ([feedText count] > 0 && [feedText count] == 6) {
         [[feedText lastObject] removeFromSuperview];
         [feedText removeObjectAtIndex:0];
     }
+}
+
+- (void)removeObjectAtIndex:(int)index
+{
+    if ([feedText objectAtIndex:index]) {
+        [[feedText objectAtIndex:index] removeFromSuperview];
+        [feedText removeObjectAtIndex:index];
+    }
+    [self renderFeed];
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,11 +110,20 @@
     TTStyledTextLabel *newLbl = [[TTStyledTextLabel alloc] initWithFrame:CGRectZero];
     [newLbl setHtml:[NSString stringWithFormat:@"<b>%@ • %@</b> %@", event, time, location]];
     
-    [self removeOldestItem];
+    //[self removeOldestItem];
     [feedText addObject:newLbl];
     [self addSubview:newLbl];
     
     [self renderFeed];
+}
+
+- (void)flushFeed 
+{
+    for (id item in feedText) {
+        [item removeFromSuperview];
+    }
+    
+    [feedText removeAllObjects];
 }
 
 @end
