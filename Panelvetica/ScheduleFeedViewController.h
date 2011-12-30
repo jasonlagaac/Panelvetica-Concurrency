@@ -16,6 +16,8 @@
     ScheduleView        *scheduleView;
     ScheduleFeedModel   *scheduleFeed;
     NSMutableArray      *upcomingEvents;
+    
+    BOOL                isLoaded;
 }
 
 @property (nonatomic, strong) ScheduleView      *scheduleView;

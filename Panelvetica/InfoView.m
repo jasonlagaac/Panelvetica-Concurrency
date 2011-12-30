@@ -21,9 +21,7 @@
 - (void)landscapeView
 {
     [self setFrame:landscapeDimensions];
-    //[self setBackgroundColor:[UIColor grayColor]];
     [self landscapeFrames];
-    [UIView commitAnimations];
     
 }
 
@@ -31,9 +29,7 @@
 - (void)portraitView
 {
     [self setFrame:portraitDimensions];
-    //[self setBackgroundColor:[UIColor grayColor]];
     [self portraitFrames];
-    [UIView commitAnimations];
 }
 
 @end

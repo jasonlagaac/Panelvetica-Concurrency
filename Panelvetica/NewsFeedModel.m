@@ -28,7 +28,9 @@ NSComparisonResult compareDate(id item1, id item2, void *context);
 # pragma mark -
 # pragma mark News Feed Actions
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-- (void)load:(TTURLRequestCachePolicy)cachePolicy more:(BOOL)more {
+- (void)load:(TTURLRequestCachePolicy)cachePolicy 
+        more:(BOOL)more 
+{
     if (!self.isLoading) {
         
         // We create a new Request for the BuildMobile RSS feed
@@ -41,28 +43,30 @@ NSComparisonResult compareDate(id item1, id item2, void *context);
         TTURLXMLResponse* response = [[TTURLXMLResponse alloc] init];
         response.isRssFeed = YES; // Make sure Items are grouped together
         request.response = response;
-        //TT_RELEASE_SAFELY(response);
         
-        [request send];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [request send];
+        });
         
         finished = NO;
     }
 }
 
 // Our Request has finished, time to parse what is stored in our response
-- (void)requestDidFinishLoad:(TTURLRequest *)request {    
+- (void)requestDidFinishLoad:(TTURLRequest *)request 
+{    
+    TTURLXMLResponse *response = (TTURLXMLResponse*) request.response;
+    TTDASSERT([response.rootObject isKindOfClass:[NSDictionary class]]);
+    
+    NSDictionary *feed = response.rootObject;
+    TTDASSERT([[feed objectForKey:@"channel"] isKindOfClass:[NSDictionary class]]);
+    
     NSArray *feedItems = nil;
     NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setTimeStyle:NSDateFormatterFullStyle];
     [dateFormatter setDateFormat:@"EEE, dd MMM yyyy HH:mm:ss zzz"];
     NSLocale *enLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en"];
     [dateFormatter setLocale:enLocale];
-    
-    TTURLXMLResponse *response = (TTURLXMLResponse*) request.response;
-    TTDASSERT([response.rootObject isKindOfClass:[NSDictionary class]]);
-    
-    NSDictionary *feed = response.rootObject;
-    TTDASSERT([[feed objectForKey:@"channel"] isKindOfClass:[NSDictionary class]]);
     
     NSDictionary *channel = [feed objectForKey:@"channel"];
     NSObject *channelItems = [channel objectForKey:@"item"]; 
@@ -90,13 +94,12 @@ NSComparisonResult compareDate(id item1, id item2, void *context);
         
         if ([previewObjects count] > 18) {
             for (int i = 0; i < 18; i++) {
-                
                 if (i < 17) 
                     previewCondensed = [previewCondensed stringByAppendingFormat:[NSString stringWithFormat:@"%@ ", [previewObjects objectAtIndex:i]]];
                 else 
                     previewCondensed = [previewCondensed stringByAppendingFormat:@"..."];
             }
-
+            
             [description setValue:[TTStyledText textFromXHTML:previewCondensed]  forKey:@"___Entity_Value___"];
         } else {
             [description  setValue:[TTStyledText textFromXHTML:previewString]  forKey:@"___Entity_Value___"];
@@ -108,6 +111,16 @@ NSComparisonResult compareDate(id item1, id item2, void *context);
     [self willChangeValueForKey:@"isFinished"];
     finished = YES;
     [self didChangeValueForKey:@"isFinished"];
+}
+
+- (void)request:(TTURLRequest *)request didFailLoadWithError:(NSError *)error
+{
+    NSLog(@"Failing");
+}
+
+-(void)fetchFeed
+{
+    [self load:TTURLRequestCachePolicyNone more:NO];
 }
 
 - (BOOL)isFinished 

@@ -35,13 +35,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 - (void)fetchTimeline
 {    
-    finished = NO;
-    
+
     TWRequest *postRequest = [[TWRequest alloc] initWithURL:[NSURL URLWithString:@"https://api.twitter.com/1/statuses/home_timeline.json"] 
                                                  parameters:nil 
                                               requestMethod:TWRequestMethodGET];
 
     [postRequest setAccount:self.account]; 
+    
     [postRequest performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
         if ([urlResponse statusCode] == 200) {
             NSError *jsonError = nil;
@@ -49,13 +49,13 @@
         }
         
         response = [urlResponse statusCode];
+        NSLog(@"Response: %d %@", [urlResponse statusCode], self.account);
         
         [self willChangeValueForKey:@"isFinished"];
         finished = YES;
         [self didChangeValueForKey:@"isFinished"];
 
     }];
-    
 }
 
 - (BOOL)isFinished

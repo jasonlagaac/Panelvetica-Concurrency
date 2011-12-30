@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <Accounts/Accounts.h>
+#import "Three20/Three20.h"
 
 @class RootView;
 @class SettingsModel;
@@ -19,30 +20,47 @@
 @class ScheduleFeedOperation;
 
 @class NewsFeedViewController;
+@class NewsFeedOperation;
+
 @class DateTimeViewController;
 
-@interface RootViewController : UIViewController 
+@class WeatherFeedOperation;
+@class WeatherViewController;
+
+@class NavigationController;
+@class WebViewController;
+
+@interface RootViewController : UIViewController <TTNavigatorDelegate>
 {
     RootView                    *rootView;
     SettingsModel               *settings;
     NSTimer                     *updateTimer;
     NSTimer                     *dateTimeTimer;
     
+    // Views and their associated operations
     SocialFeedViewController    *socialFeedViewController;
     SocialFeedOperation         *socialFeedOper;
     
     ScheduleFeedViewController  *scheduleFeedViewController;
     ScheduleFeedOperation       *scheduleFeedOper;
     
-    // NOTE: There is no NewsFeedOperation as TTURLRequest 
-    // already does operations concurrently.
     NewsFeedViewController      *newsFeedViewController;
+    NewsFeedOperation           *newsFeedOper;
+    
     DateTimeViewController      *dateTimeViewController;
-
+    
+    WeatherViewController       *weatherViewController;
+    WeatherFeedOperation        *weatherFeedOper;
+    
     // Operation Queue
     NSOperationQueue            *operationQueue;
+    
+    TTNavigator                 *navigator;
+    NavigationController        *navViewController;
+    WebViewController           *webViewController;
 }
 
 @property (strong, nonatomic) SettingsModel   *settings;
+
 
 @end

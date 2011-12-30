@@ -11,5 +11,10 @@
 @interface NewsFeedView : FeedView
 
 - (void)addNewEntry:(NSString *)content
-            heading:(NSString *)heading;
+            heading:(NSString *)heading
+               link:(NSString *)link;
+
+- (void)setStatusLoading;
+- (void)setStatusError;
+
 @end

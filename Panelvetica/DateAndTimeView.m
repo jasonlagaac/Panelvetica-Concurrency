@@ -15,39 +15,54 @@
 - (id)init
 {
     self = [super initWithFrame:CGRectZero];
-    worldTimes = [[NSMutableArray alloc] init];
     
-    // Initialise the main time and date views
-    portraitDimensions = CGRectMake(380, 30, 365, 250);
-    landscapeDimensions = CGRectMake(524, 40, 462, 250);
-    
-    mainTimePortrait = CGRectMake(0, -10, 365, 80);
-    mainTimeLandscape = CGRectMake(0, -20, 462, 100);
-    mainTime = [[UILabel alloc] initWithFrame:CGRectZero];
-    [mainTime setTextAlignment:UITextAlignmentRight];
-    [self addSubview:mainTime];
-    
-    
-    mainDatePortrait = CGRectMake(0, 70, 365, 30);
-    mainDateLandscape = CGRectMake(0, 70, 462, 30);
-    mainDate = [[UILabel alloc] initWithFrame:CGRectZero];
-    [mainDate setTextAlignment:UITextAlignmentRight];
-    [self addSubview:mainDate];
-    
-    
-    // Initialise the world time and date views
-    int portrait_y = 100;
-    int landscape_y = 110;
-    for (int i = 0; i < TOTAL_TIME_VIEWS; i++) {
-        worldTimePortrait[i] = CGRectMake(0, portrait_y, 365, 35);
-        worldTimeLandscape[i] = CGRectMake(0, landscape_y, 462, 37);
+    if (self) {
+        worldTimes = [[NSMutableArray alloc] init];
         
-        [worldTimes addObject:[[UILabel alloc] initWithFrame:CGRectZero]];
-        [[worldTimes lastObject] setTextAlignment:UITextAlignmentRight];
-        [self addSubview:[worldTimes lastObject]];
-         
-        portrait_y += 30;
-        landscape_y += 30;
+        [self setBackgroundColor:[UIColor clearColor]];
+        
+        // Initialise the main time and date views
+        portraitDimensions = CGRectMake(380, 30, 365, 250);
+        landscapeDimensions = CGRectMake(524, 40, 462, 250);
+        
+        mainTimePortrait = CGRectMake(0, -10, 365, 80);
+        mainTimeLandscape = CGRectMake(0, -20, 462, 100);
+        mainTime = [[UILabel alloc] initWithFrame:CGRectZero];
+        [mainTime setTextAlignment:UITextAlignmentRight];
+        [mainTime setBackgroundColor:[UIColor clearColor]];
+        [mainTime setTextColor:[UIColor whiteColor]];
+
+        [self addSubview:mainTime];
+        
+        
+        mainDatePortrait = CGRectMake(0, 70, 365, 30);
+        mainDateLandscape = CGRectMake(0, 70, 462, 30);
+        mainDate = [[UILabel alloc] initWithFrame:CGRectZero];
+        [mainDate setTextAlignment:UITextAlignmentRight];
+        [mainDate setBackgroundColor:[UIColor clearColor]];
+        [mainDate setTextColor:[UIColor whiteColor]];
+
+
+        [self addSubview:mainDate];
+        
+        
+        // Initialise the world time and date views
+        int portrait_y = 100;
+        int landscape_y = 110;
+        for (int i = 0; i < TOTAL_TIME_VIEWS; i++) {
+            worldTimePortrait[i] = CGRectMake(0, portrait_y, 365, 35);
+            worldTimeLandscape[i] = CGRectMake(0, landscape_y, 462, 37);
+            
+            [worldTimes addObject:[[UILabel alloc] initWithFrame:CGRectZero]];
+            [[worldTimes lastObject] setTextAlignment:UITextAlignmentRight];
+            [[worldTimes lastObject] setBackgroundColor:[UIColor clearColor]];
+            [[worldTimes lastObject] setTextColor:[UIColor whiteColor]];
+
+            [self addSubview:[worldTimes lastObject]];
+             
+            portrait_y += 30;
+            landscape_y += 30;
+        }
     }
 
     return self;
@@ -68,7 +83,6 @@
         [[worldTimes objectAtIndex:i] setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:20]];
     }
     
-    [UIView commitAnimations];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +99,6 @@
         [[worldTimes objectAtIndex:i] setFont:[UIFont fontWithName:@"HelveticaNeue-Bold" size:17]];
     }
     
-    [UIView commitAnimations];
 }
 
 @end

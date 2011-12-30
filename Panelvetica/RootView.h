@@ -12,6 +12,9 @@
 {
     UIButton            *settingsButton;
     UIButton            *reloadButton;
+    
+    UIImageView         *backgroundImage;
+    UIView              *opacityLayer;
 }
 
 - (void)setPortrait;

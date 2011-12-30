@@ -7,17 +7,19 @@
 //
 
 #import "SocialFeedViewController.h"
-
 #import "SocialFeedModel.h"
 #import "SocialMediaView.h"
 
 @interface SocialFeedViewController (Private)
 - (void)reloadFeed;
+- (BOOL)isNewPostsInFeed:(NSArray *)newPosts;
+- (BOOL)compareFeedPost:(id)obj1 
+                   with:(id)obj2;
+
 @end
 
 
 @implementation SocialFeedViewController
-
 @synthesize  socialFeedView, socialFeed;
 
 - (id)init
@@ -34,52 +36,104 @@
     return self;
 }
 
+#pragma mark - Feed operations
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 -(void)feedUpdate {
-    NSArray *recentPosts = [[[[[self socialFeed]timeline] subarrayWithRange:NSMakeRange(0, 4)] reverseObjectEnumerator] allObjects];   
+    NSArray *recentPosts = [[[self socialFeed]timeline] subarrayWithRange:NSMakeRange(0, 4)];   
     
     if (currentPosts == nil) {
-        currentPosts = recentPosts;
+        currentPosts = [[NSArray alloc] initWithArray:[recentPosts copy]];
         [self reloadFeed];
-
-    } else if (![currentPosts isEqualToArray:recentPosts]) {
+        //NSLog(@"current pos: %@",[currentPosts objectAtIndex:0]);
+        
+    } else if ([self isNewPostsInFeed:recentPosts]) {
+        
+        // Determine up to which posts need changing
         int currentTopPos = 0;
         while (currentTopPos < 4) {
-            if ([[currentPosts objectAtIndex:0] isEqual:[recentPosts objectAtIndex:currentTopPos]])
+            if ([self compareFeedPost:[currentPosts objectAtIndex:0] with:[recentPosts objectAtIndex:currentTopPos]])
                 break;
             currentTopPos++;
         }
         
+        // If the new post count is equal to the max capacity then reload the feed.
         if (currentTopPos == 4) {
             [self reloadFeed];
         } else {
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                for (int i = 0; i < currentTopPos; i++){
-                    id item = [recentPosts objectAtIndex:i];
-                    
-                    NSString *username = [item valueForKeyPath:@"user.screen_name"];
-                    NSString *post = [item objectForKey:@"text"];
-                    
+            // replace the objects which only need replacing so that we dont have to redraw the feed.
+            for (int i = 0; i < currentTopPos; i++){
+                id item = [recentPosts objectAtIndex:i];
+                
+                NSString *username = [item valueForKeyPath:@"user.screen_name"];
+                NSString *post = [item objectForKey:@"text"];
+                
+                // Draw the posts in the interface.
+                dispatch_async(dispatch_get_main_queue(), ^{
                     [[self socialFeedView] addNewPost:post 
                                          withUsername:username];
-                }
-            });
+                });
+            }
         }
+        
+        // Assign the new feed to the currentPosts array
+        currentPosts = nil;
+        currentPosts = [[NSArray alloc] initWithArray:[recentPosts copy]];
     }
-}
-
-- (void)reloadFeed 
-{
-    NSArray *recentPosts = [[[[[self socialFeed]timeline] subarrayWithRange:NSMakeRange(0, 4)] reverseObjectEnumerator] allObjects];   
     
-    dispatch_sync(dispatch_get_main_queue(), ^{
-        for (id item in recentPosts) {
-            NSString *username = [item valueForKeyPath:@"user.screen_name"];
-            NSString *post = [item objectForKey:@"text"];
-            
-            [[self socialFeedView] addNewPost:post 
-                                 withUsername:username];
-        }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (recentPosts != nil)
+            [[self socialFeedView] hideStatusDisplay];
     });
 }
 
+- (void)reloadFeed 
+{    
+    for (id item in [[currentPosts reverseObjectEnumerator] allObjects]) {
+        NSString *username = [item valueForKeyPath:@"user.screen_name"];
+        NSString *post = [item objectForKey:@"text"];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[self socialFeedView] addNewPost:post 
+                                 withUsername:username];
+        });
+    }
+}
+
+#pragma mark - Feed comparison operators
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (BOOL)isNewPostsInFeed:(NSArray *)newPosts
+{
+    for (int i = 0; i < 4; i++) {
+        NSString *newFeedUsername = [[newPosts objectAtIndex:i] valueForKeyPath:@"user.screen_name"];
+        NSString *newFeedPost = [[newPosts objectAtIndex:i]valueForKeyPath:@"text"];
+        
+        NSString *currFeedUsername = [[currentPosts objectAtIndex:i] valueForKeyPath:@"user.screen_name"];
+        NSString *currFeedPost = [[currentPosts objectAtIndex:i]valueForKeyPath:@"text"];
+        
+        if (![currFeedUsername isEqualToString:newFeedUsername] || ![currFeedPost isEqualToString:newFeedPost]) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
+- (BOOL)compareFeedPost:(id)obj1 
+                   with:(id)obj2
+{
+    NSString *obj1Username = [obj1 valueForKeyPath:@"user.screen_name"];
+    NSString *obj1Post = [obj1 valueForKeyPath:@"text"];
+    
+    NSString *obj2Username = [obj2 valueForKeyPath:@"user.screen_name"];
+    NSString *obj2Post = [obj2 valueForKeyPath:@"text"];
+    
+    if ([obj1Username isEqualToString:obj2Username] && [obj1Post isEqualToString:obj2Post]) {
+        return YES;
+    }
+    
+    return NO;
+}
 @end

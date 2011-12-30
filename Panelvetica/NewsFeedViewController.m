@@ -12,6 +12,10 @@
 
 @interface NewsFeedViewController (Private)
 - (void)reloadFeed;
+- (BOOL)compareFeedPost:(id)obj1 
+                   with:(id)obj2;
+- (BOOL)isNewPostsInFeed:(NSArray *)newPosts;
+
 @end
 
 
@@ -41,30 +45,40 @@
     if ([currentNewsFeed count] == 0) {
         [currentNewsFeed addObjectsFromArray:[newsFeed items]];
         [self reloadFeed];
-    } else if (![currentNewsFeed isEqualToArray:[newsFeed items]]) { 
+    } else if ([self isNewPostsInFeed:[newsFeed items]]) { 
         int currentTopPos = 0;
         while (currentTopPos < 4) {
-            if ([[[newsFeed items] objectAtIndex:0] isEqual:[currentNewsFeed objectAtIndex:currentTopPos]])
+            if ([self compareFeedPost:[[newsFeed items] objectAtIndex:0] 
+                                 with:[currentNewsFeed objectAtIndex:currentTopPos]]) {
                 break;
+            }
             currentTopPos++;
         }
         
         if (currentTopPos == 4) {
-            [self reloadFeed];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self reloadFeed];
+            });
         } else {
-            dispatch_sync(dispatch_get_main_queue(), ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
                 for (int i = 0; i < currentTopPos; i++){
                     id item = [[newsFeed items] objectAtIndex:i];
                     
                     NSDictionary *titleElement = [item objectForKey:@"title"];
                     NSDictionary *descriptionElement = [item objectForKey:@"description"];
+                    NSDictionary *linkElement = [item objectForKey:@"link"];
                     
                     [[self newsFeedView] addNewEntry:[descriptionElement objectForKey:@"___Entity_Value___"]
-                                             heading:[titleElement objectForKey:@"___Entity_Value___"]];
+                                             heading:[titleElement objectForKey:@"___Entity_Value___"]
+                                                link:[linkElement objectForKey:@"___Entity_Value___"]];
                 }
             });
         }
     }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[self newsFeedView] hideStatusDisplay];
+    });
 }
 
 - (void)reloadFeed
@@ -72,12 +86,43 @@
     for (NSDictionary *item in [newsFeed items]) {
         NSDictionary *titleElement = [item objectForKey:@"title"];
         NSDictionary *descriptionElement = [item objectForKey:@"description"];
-        
+        NSDictionary *linkElement = [item objectForKey:@"link"];
+
         [[self newsFeedView] addNewEntry:[descriptionElement objectForKey:@"___Entity_Value___"]
-                                 heading:[titleElement objectForKey:@"___Entity_Value___"]];
+                                 heading:[titleElement objectForKey:@"___Entity_Value___"]
+                                    link:[linkElement objectForKey:@"___Entity_Value___"]];
         
     }
 }
 
+#pragma mark - Feed comparison operators
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+- (BOOL)isNewPostsInFeed:(NSArray *)newPosts
+{
+    for (int i = 0; i < 4; i++) {
+        
+        NSString *obj1Description = [[[newPosts objectAtIndex:i] objectForKey:@"description"] objectForKey:@"___Entity_Value___"];
+        NSString *obj2Description = [[[currentNewsFeed objectAtIndex:i] objectForKey:@"description"] objectForKey:@"___Entity_Value___"];
+        
+        if ([obj1Description isEqual:obj2Description]) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
+- (BOOL)compareFeedPost:(id)obj1 
+                   with:(id)obj2
+{
+    TTStyledText *obj1Description = [[obj1 objectForKey:@"description"] objectForKey:@"___Entity_Value___"];
+    TTStyledText *obj2Description = [[obj2 objectForKey:@"description"] objectForKey:@"___Entity_Value___"];
+    
+    if ([obj1Description isEqual:obj2Description]) {
+        return YES;
+    }
+    
+    return NO;
+}
 
 @end

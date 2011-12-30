@@ -8,7 +8,8 @@
 
 #import "AppDelegate.h"
 #import "RootViewController.h"
-
+#import "Three20/Three20.h"
+#import "PanelStyleSheet.h"
 
 @implementation AppDelegate
 
@@ -20,10 +21,12 @@
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
 
     root_controller = [[RootViewController alloc] init];
+    [TTStyleSheet setGlobalStyleSheet:[[PanelStyleSheet alloc] init]];
     
+     
     [self.window addSubview:[root_controller view]];
     [self.window setRootViewController:root_controller];
-    
+
     [self.window makeKeyAndVisible];
     
     return YES;
@@ -67,5 +70,7 @@
      See also applicationDidEnterBackground:.
      */
 }
+
+
 
 @end

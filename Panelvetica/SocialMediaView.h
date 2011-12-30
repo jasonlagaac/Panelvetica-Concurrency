@@ -6,14 +6,15 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
+
 #import "FeedView.h"
 
 @interface SocialMediaView : FeedView
 
-
-@property (nonatomic, strong)  UITextView  *debugView;
-
-
 -(void)addNewPost:(NSString *)post 
      withUsername:(NSString *)user;
+
+- (void)setStatusLoading;
+- (void)setStatusError;
+
 @end

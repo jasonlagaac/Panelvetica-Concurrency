@@ -26,6 +26,8 @@
         scheduleView = [[ScheduleView alloc] init];
         scheduleFeed = [[ScheduleFeedModel alloc] init];
         upcomingEvents = [[NSMutableArray alloc] init];
+        
+        isLoaded = NO;
         [self setView:scheduleView];
     }
     
@@ -55,7 +57,7 @@
         }
         
         if ([[scheduleView feedText] count] < 6) {
-            for (int i = [[scheduleView feedText] count]; i < 6 && i < [upcomingEvents count]; i++) {
+            for (int i = 0; i < 6 && i < [upcomingEvents count]; i++) {
                 EKEvent *event = [upcomingEvents objectAtIndex:i];
                 
                 NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -70,13 +72,27 @@
                 else
                     location = [NSString stringWithString:@""];
                 
-                
+                /*
                 [scheduleView addEvent:title 
                                   time:[dateFormatter stringFromDate:startTime]  
                               location:location];
+                */
             }
         }
     }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@"Schedule Items: %d", [[scheduleFeed events] count]);
+        if ([[scheduleFeed events] count] == 0 && isLoaded == NO) {
+            isLoaded = YES;
+            [scheduleView setStatusNoEvents];
+        } else if ([[scheduleFeed events] count] != 0 && isLoaded == NO) {
+            isLoaded = YES;
+            [[self scheduleView] hideStatusDisplay];
+            [[self scheduleView] loadFeed];
+        }
+    });
+    
 }
 
 - (void)reloadFeed 
@@ -105,12 +121,15 @@
             else
                 location = [NSString stringWithString:@""];
             
-            
+            /*
             [scheduleView addEvent:title 
                               time:[dateFormatter stringFromDate:startTime]  
                           location:location];
+            */
         }
     }
+    
+    
 }
 
 

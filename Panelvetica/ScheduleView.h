@@ -8,9 +8,12 @@
 
 #import "FeedView.h"
 
-#define TOTAL_SEG_SCHED 6
+#define TOTAL_SEG_SCHED 7
 
 @interface ScheduleView : FeedView
+{
+    NSMutableArray  *removedItemsCache;
+}
 
 - (void)addEvent:(NSString *)event 
             time:(NSString *)time 
@@ -18,5 +21,11 @@
 
 - (void)removeObjectAtIndex:(int)index;
 - (void)flushFeed;
+
+- (void)setStatusLoading;
+- (void)setStatusError;
+- (void)setStatusNoEvents;
+
+- (void)loadFeed;
 
 @end
