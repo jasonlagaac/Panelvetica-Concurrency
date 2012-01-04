@@ -23,11 +23,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Panelvetica/ScheduleFeedViewController.m"
-         timestampString = "346897892.013598"
+         timestampString = "347344045.090886"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "31"
-         endingLineNumber = "31"
+         startingLineNumber = "33"
+         endingLineNumber = "33"
          landmarkName = "-init"
          landmarkType = "5">
       </FileBreakpoint>
@@ -89,12 +89,40 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Panelvetica/ScheduleFeedViewController.m"
-         timestampString = "346905516.882625"
+         timestampString = "347349246.375075"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "90"
-         endingLineNumber = "90"
+         startingLineNumber = "105"
+         endingLineNumber = "105"
          landmarkName = "-feedUpdate"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "Panelvetica/ScheduleView.m"
+         timestampString = "347344490.577133"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "315"
+         endingLineNumber = "315"
+         landmarkName = "-moveItems:finished:context:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         isPathRelative = "1"
+         filePath = "Panelvetica/ScheduleView.m"
+         timestampString = "347344491.39469"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "319"
+         endingLineNumber = "319"
+         landmarkName = "-moveItems:finished:context:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

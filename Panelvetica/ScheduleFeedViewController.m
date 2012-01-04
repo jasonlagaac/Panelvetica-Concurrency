@@ -25,7 +25,9 @@
     if (self) {
         scheduleView = [[ScheduleView alloc] init];
         scheduleFeed = [[ScheduleFeedModel alloc] init];
+        
         upcomingEvents = [[NSMutableArray alloc] init];
+        currentEvents = [[NSMutableArray alloc] init];
         
         isLoaded = NO;
         [self setView:scheduleView];
@@ -44,49 +46,62 @@
         [self reloadFeed];
     } else {
         // Remove the past events as time progresses
-        for (int i = 0; i < [upcomingEvents count]; i++) {
-            EKEvent *event = [upcomingEvents objectAtIndex:i];
+        NSMutableArray *removedItems = [[NSMutableArray alloc] init];
+        for (int i = 0; i < [currentEvents count]; i++) {
+            EKEvent *event = [currentEvents objectAtIndex:i];
             
             NSDate *eventStart = [event startDate];
             double timeInterval = [today timeIntervalSinceDate:eventStart];
             
-            if (timeInterval > 120) {
-                [upcomingEvents removeObjectAtIndex:i];
-                [scheduleView removeObjectAtIndex:i];
+            if (timeInterval > 60) {
+                [removedItems addObject:[NSNumber numberWithInt:i]];
             }
         }
         
-        if ([[scheduleView feedText] count] < 6) {
-            for (int i = 0; i < 6 && i < [upcomingEvents count]; i++) {
-                EKEvent *event = [upcomingEvents objectAtIndex:i];
-                
-                NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                dateFormatter.dateFormat = @"hh:mm a";
-                NSDate *startTime = [event startDate];
-                
-                NSString *title = [event title];
-                NSString *location = nil;
-                
-                if ([event location])
-                    location = [event location];
-                else
-                    location = [NSString stringWithString:@""];
-                
-                /*
-                [scheduleView addEvent:title 
-                                  time:[dateFormatter stringFromDate:startTime]  
-                              location:location];
-                */
+        // Remove items
+        for (NSNumber *num in removedItems) {
+            [currentEvents removeObjectAtIndex:[num intValue]];
+        }
+        
+        [scheduleView removeObjects:removedItems];
+        
+        
+        if ([currentEvents count] < 7) {
+            if ([upcomingEvents count] > 0) {
+                while (([currentEvents count] < 7) && ([upcomingEvents count] > 0)) {
+                    EKEvent *event = [upcomingEvents objectAtIndex:1];
+                    [currentEvents addObject:event];
+                    [upcomingEvents removeObjectAtIndex:1];
+                    
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    dateFormatter.dateFormat = @"hh:mm a";
+                    NSDate *startTime = [event startDate];
+                    
+                    NSString *title = [event title];
+                    NSString *location = nil;
+                    
+                    if ([event location])
+                        location = [event location];
+                    else
+                        location = [NSString stringWithString:@""];
+                    
+                    [scheduleView addEvent:title 
+                                      time:[dateFormatter stringFromDate:startTime]  
+                                  location:location];
+                }
             }
         }
-    }
+        
+        [removedItems removeAllObjects];
+    } 
     
     dispatch_async(dispatch_get_main_queue(), ^{
         NSLog(@"Schedule Items: %d", [[scheduleFeed events] count]);
-        if ([[scheduleFeed events] count] == 0 && isLoaded == NO) {
+        if ([currentEvents count] == 0 && isLoaded == NO) {
             isLoaded = YES;
             [scheduleView setStatusNoEvents];
-        } else if ([[scheduleFeed events] count] != 0 && isLoaded == NO) {
+        }  else if ([currentEvents count] != 0 && isLoaded == NO) {
+            // Load the feed 
             isLoaded = YES;
             [[self scheduleView] hideStatusDisplay];
             [[self scheduleView] loadFeed];
@@ -107,29 +122,36 @@
         NSDate *eventStart = [event startDate];
         double timeInterval = [today timeIntervalSinceDate:eventStart];
         
+        // Add all objects that are within the 24 hour period
+        // into an array
         if (timeInterval < 300) {
             [upcomingEvents addObject:event];
-            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-            dateFormatter.dateFormat = @"hh:mm a";
-            NSDate *startTime = [event startDate];
-            
-            NSString *title = [event title];
-            NSString *location = nil;
-            
-            if ([event location])
-                location = [event location];
-            else
-                location = [NSString stringWithString:@""];
-            
-            /*
-            [scheduleView addEvent:title 
-                              time:[dateFormatter stringFromDate:startTime]  
-                          location:location];
-            */
         }
     }
     
+    // Draw add the top 7 upcoming events within the view
+    while (([currentEvents count] < 7) && ([upcomingEvents count] > 0)) {
+        EKEvent *event = [upcomingEvents objectAtIndex:1];
+        [currentEvents addObject:event];
+        [upcomingEvents removeObjectAtIndex:1];
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.dateFormat = @"hh:mm a";
+        NSDate *startTime = [event startDate];
+        
+        NSString *title = [event title];
+        NSString *location = nil;
+        
+        if ([event location])
+            location = [event location];
+        else
+            location = [NSString stringWithString:@""];
+        
+        [scheduleView addEvent:title 
+                          time:[dateFormatter stringFromDate:startTime]  
+                      location:location];
     
+    }
 }
 
 

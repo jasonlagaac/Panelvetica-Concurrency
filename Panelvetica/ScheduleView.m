@@ -19,7 +19,6 @@
     self = [self initWithFrame:CGRectZero];
     if (self) {
         [self setHeader:[UIImage imageNamed:@"schedule.png"]];
-        removedItemsCache = [[NSMutableArray alloc] init];
     }
     
     return self;
@@ -93,7 +92,7 @@
     [newLbl setTextColor:[UIColor whiteColor]];
     [newLbl setAlpha:0.0f];
     
-    [newFeedTextCache insertObject:newLbl atIndex:0];
+    [newFeedTextCache addObject:newLbl];
 }
 
 - (void)flushFeed 
@@ -133,7 +132,6 @@
         [statusDisplay setHidden:NO];
     
     [statusDisplay setImage:[UIImage imageNamed:@"scheduleError.png"]];
-    
 }
 
 - (void)setStatusNoEvents
@@ -151,33 +149,38 @@
 - (void)loadFeed
 {
     animatingFeed = YES;
-    
-    // Copy the feed items available
-    feedText = [NSMutableArray arrayWithArray:[newFeedTextCache copy]];
-    [newFeedTextCache removeAllObjects];
-    
-    // Draw them into the view
-    for (id item in feedText) {
-        [self addSubview:item];
+    NSLog(@"Feed text count: %d", [newFeedTextCache count]);
+
+    if ([newFeedTextCache count] != 0) {
+        feedText = [NSMutableArray arrayWithArray:[newFeedTextCache copy]];
+        
+        NSLog(@"Feed text count: %d", [feedText count]);
+        [newFeedTextCache removeAllObjects];
+        
+        // Draw them into the view
+        for (id item in feedText) {
+            [self addSubview:item];
+        }
+             
+        // Set their layout
+        [self renderFeed];
+        
+        int *pos_val = (int *) malloc(sizeof(int));
+        *pos_val = 0;
+
+        NSLog(@"FeedText Size: %d", [feedText count]);
+
+        [UIView beginAnimations:@"fadeInItemInFeed" context:pos_val];
+        [UIView setAnimationDelegate:self];    
+        [UIView setAnimationDidStopSelector:@selector(feedItemLoad:finished:context:)];
+        [UIView setAnimationDuration:0.5f];
+        
+        [[feedText objectAtIndex:*pos_val] setAlpha:1.0f];
+        
+        [UIView commitAnimations];
+    } else {
+        [self setStatusNoEvents];
     }
-         
-    // Set their layout
-    [self renderFeed];
-    
-    int *pos_val = (int *) malloc(sizeof(int));
-    *pos_val = 0;
-
-    NSLog(@"FeedText Size: %d", [feedText count]);
-
-    [UIView beginAnimations:@"fadeInItemInFeed" context:pos_val];
-    [UIView setAnimationDelegate:self];    
-    [UIView setAnimationDidStopSelector:@selector(feedItemLoad:finished:context:)];
-    [UIView setAnimationDuration:0.5f];
-    
-    [[feedText objectAtIndex:*pos_val] setAlpha:1.0f];
-    
-    [UIView commitAnimations];
-
 }
 
 #pragma mark -
@@ -192,30 +195,29 @@
 }
 
 
-- (void)removeObjectAtIndex:(int)index
+- (void)removeObjects:(NSMutableArray *)items
 {    
-    if ([feedText objectAtIndex:index]) {       
-        [removedItemsCache addObject:[feedText objectAtIndex:index]];
+    if ([items count] > 0) {
+        removedObjects = [NSMutableArray arrayWithArray:[items copy]];
+        
+        int *pos_val = (int *) malloc(sizeof(int));
+        *pos_val = 0;
+        
+        [UIView beginAnimations:@"fadeInItemInFeed" context:pos_val];
+        [UIView setAnimationDelegate:self];    
+        [UIView setAnimationDidStopSelector:@selector(moveItems:finished:context:)];
+        [UIView setAnimationDuration:0.5f];
+        
+        for (id item in items) {
+            NSNumber *num = item;
+            int pos = [num intValue];
+            [[feedText objectAtIndex:pos] setAlpha:0.0f];
+        }
+        
+        [UIView commitAnimations];
     }
 }
 
-- (void)removeFeedObjects
-{
-    int *pos_val = (int *) malloc(sizeof(int));
-    *pos_val = 0;
-    
-    [UIView beginAnimations:@"fadeInItemInFeed" context:pos_val];
-    [UIView setAnimationDelegate:self];    
-    [UIView setAnimationDidStopSelector:@selector(moveItems:finished:context:)];
-    [UIView setAnimationDuration:0.5f];
-    
-    for (id item in removedItemsCache) {
-        [item setAlpha:0.0f];
-    }
-    
-    [UIView commitAnimations];
-    
-}
 
 
 #pragma mark -
@@ -239,7 +241,6 @@
         [UIView setAnimationDidStopSelector:@selector(feedItemLoad:finished:context:)];
         [UIView setAnimationDuration:0.5f];
         
-
         [[feedText objectAtIndex:*pos_val] setAlpha:1.0f];
         
         [UIView commitAnimations];
@@ -247,15 +248,6 @@
     } else {
         [newFeedTextCache removeAllObjects];
         animatingFeed = NO;
-        
-        // Start the timer to monitor the removeItemsCache
-        feedDrawTimer = [NSTimer timerWithTimeInterval:5.0f
-                                                target:self 
-                                              selector:@selector(removeFeedObjects) 
-                                              userInfo:nil 
-                                               repeats:YES];
-        [[NSRunLoop currentRunLoop] addTimer:feedDrawTimer
-                                     forMode:NSRunLoopCommonModes];
         
         free(context);
     }
@@ -267,16 +259,22 @@
           context:(void *)context 
 {
     int *pos_val = (int *) context;
-    (*pos_val)++;
-
+    
     // Remove all the old objects
-    if ((*pos_val - 1) == 0) {
-        for (id item in removedItemsCache) {
-            [item removeFromSuperview];
-            [feedText removeObject:item];
+    if (*pos_val == 0) {
+        NSLog(@"Feed text init count: %d", [feedText count]);
+        for (NSNumber *num in removedObjects) {
+            [[feedText objectAtIndex:[num intValue]] removeFromSuperview];
+            [feedText removeObjectAtIndex:[num intValue]];
         }
-        [removedItemsCache removeAllObjects];
+        
+        [removedObjects removeAllObjects];
+        removedObjects = nil;
+        
+        NSLog(@"After text count: %d", [feedText count]);
     }
+    
+    (*pos_val)++;
 
     // Move all the current objects up to their new places.
     if ((*pos_val - 1) < [feedText count] && [finished boolValue] == YES) {
@@ -288,45 +286,45 @@
         [UIView setAnimationDuration:0.5f];
         
         CGRect newFrame = [[feedText objectAtIndex:(*pos_val - 1)] frame];
-        
-        NSLog(@"pos_val: %d", [feedText count]);
-        
+                
         if (UIInterfaceOrientationIsLandscape(currentOrientation)) {
-            newFrame.origin.y -= 66 * *pos_val;
-                    
+            newFrame.origin.y = 66 * (*pos_val - 1);
+            NSLog(@"bang pos_val: %d", (*pos_val - 1));
+
         } else {
             // Set the X origin
-            if (((*pos_val - 1) % 2) == 0) {
+            if ((*pos_val % 2) == 0) {
                 newFrame.origin.x = 60;
             } else {
                 newFrame.origin.x = 374;
             }
             
             // Set the Y origin
-            if ((*pos_val - 1) <= 1) 
+            if (*pos_val <= 1) 
                 newFrame.origin.y = 0;
             else if (*pos_val <= 3)
                 newFrame.origin.y = 76;
             else if (*pos_val <= 5)
                 newFrame.origin.y = 149;
-
-            [[feedText objectAtIndex:(*pos_val - 1)] setFrame:newFrame];
         }
         
         [[feedText objectAtIndex:(*pos_val - 1)] setFrame:newFrame];
-
-        
         [UIView commitAnimations];
         
     } else {
         // Add the new item to the feed
-        [feedText insertObject:[newFeedTextCache lastObject] atIndex:0];
+        // [feedText insertObject:[newFeedTextCache lastObject] atIndex:0];
         
         //[feedText insertObjects:[newFeedTextCache] atIndexes:
-        [feedText addObjectsFromArray:newFeedTextCache];
+        NSArray *newFeed = [[newFeedTextCache reverseObjectEnumerator] allObjects];
+        [feedText addObjectsFromArray:newFeed];
         
         // Set their dimensions and add them to the view
         [self renderFeed];
+        
+        for (TTStyledTextLabel *item in newFeedTextCache) {
+            [self addSubview:item];
+        }
         
         // Start the animation
         [UIView beginAnimations:@"fadeInNewItem" context:pos_val];
@@ -334,22 +332,17 @@
         
         int count = 0;
         while (count < [newFeedTextCache count]) {
-            [self addSubview:[newFeedTextCache objectAtIndex:count]];
             [[newFeedTextCache objectAtIndex:count] setAlpha:1.0f];
         }
         
         [UIView commitAnimations];
         
-        
         // Remove the old objects from the cache and the feed
-        [newFeedTextCache removeAllObjects];
-        [[feedText objectAtIndex:0] removeFromSuperview];
-        [feedText removeObjectAtIndex:0];
-        
+        [newFeedTextCache removeAllObjects];        
 
         animatingFeed = NO;
         free(context);
-    }
+    } 
     
 }
 

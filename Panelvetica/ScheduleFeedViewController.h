@@ -15,7 +15,9 @@
 {
     ScheduleView        *scheduleView;
     ScheduleFeedModel   *scheduleFeed;
+    
     NSMutableArray      *upcomingEvents;
+    NSMutableArray      *currentEvents;
     
     BOOL                isLoaded;
 }
