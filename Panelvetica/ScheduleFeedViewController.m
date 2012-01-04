@@ -40,13 +40,13 @@
 {
     // Sort the array by time
     NSDate *today = [NSDate date];
+    int removeItemsCount = 0;
 
     if ([scheduleFeed isUpdated]) {
         // Allocate some events 
         [self reloadFeed];
     } else {
         // Remove the past events as time progresses
-        NSMutableArray *removedItems = [[NSMutableArray alloc] init];
         for (int i = 0; i < [currentEvents count]; i++) {
             EKEvent *event = [currentEvents objectAtIndex:i];
             
@@ -54,24 +54,22 @@
             double timeInterval = [today timeIntervalSinceDate:eventStart];
             
             if (timeInterval > 60) {
-                [removedItems addObject:[NSNumber numberWithInt:i]];
+                removeItemsCount++;
             }
         }
         
         // Remove items
-        for (NSNumber *num in removedItems) {
-            [currentEvents removeObjectAtIndex:[num intValue]];
+    
+        for (int i = 0; i < removeItemsCount; i++) {
+            [currentEvents removeObjectAtIndex:0];
         }
-        
-        [scheduleView removeObjects:removedItems];
-        
         
         if ([currentEvents count] < 7) {
             if ([upcomingEvents count] > 0) {
                 while (([currentEvents count] < 7) && ([upcomingEvents count] > 0)) {
-                    EKEvent *event = [upcomingEvents objectAtIndex:1];
+                    EKEvent *event = [upcomingEvents objectAtIndex:0];
                     [currentEvents addObject:event];
-                    [upcomingEvents removeObjectAtIndex:1];
+                    [upcomingEvents removeObjectAtIndex:0];
                     
                     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
                     dateFormatter.dateFormat = @"hh:mm a";
@@ -91,8 +89,6 @@
                 }
             }
         }
-        
-        [removedItems removeAllObjects];
     } 
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -105,6 +101,8 @@
             isLoaded = YES;
             [[self scheduleView] hideStatusDisplay];
             [[self scheduleView] loadFeed];
+        } else if ([currentEvents count] > 0){
+            [scheduleView removeObjects:removeItemsCount];
         }
     });
     
@@ -131,9 +129,9 @@
     
     // Draw add the top 7 upcoming events within the view
     while (([currentEvents count] < 7) && ([upcomingEvents count] > 0)) {
-        EKEvent *event = [upcomingEvents objectAtIndex:1];
+        EKEvent *event = [upcomingEvents objectAtIndex:0];
         [currentEvents addObject:event];
-        [upcomingEvents removeObjectAtIndex:1];
+        [upcomingEvents removeObjectAtIndex:0];
         
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         dateFormatter.dateFormat = @"hh:mm a";

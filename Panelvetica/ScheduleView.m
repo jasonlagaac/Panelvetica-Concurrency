@@ -195,11 +195,10 @@
 }
 
 
-- (void)removeObjects:(NSMutableArray *)items
+- (void)removeObjects:(int)itemsCount
 {    
-    if ([items count] > 0) {
-        removedObjects = [NSMutableArray arrayWithArray:[items copy]];
-        
+    if (itemsCount > 0) {        
+        removedItems = itemsCount;
         int *pos_val = (int *) malloc(sizeof(int));
         *pos_val = 0;
         
@@ -208,9 +207,7 @@
         [UIView setAnimationDidStopSelector:@selector(moveItems:finished:context:)];
         [UIView setAnimationDuration:0.5f];
         
-        for (id item in items) {
-            NSNumber *num = item;
-            int pos = [num intValue];
+        for (int pos = 0; pos < itemsCount; pos++) {
             [[feedText objectAtIndex:pos] setAlpha:0.0f];
         }
         
@@ -263,13 +260,12 @@
     // Remove all the old objects
     if (*pos_val == 0) {
         NSLog(@"Feed text init count: %d", [feedText count]);
-        for (NSNumber *num in removedObjects) {
-            [[feedText objectAtIndex:[num intValue]] removeFromSuperview];
-            [feedText removeObjectAtIndex:[num intValue]];
+        for (int i = 0; i < removedItems; i++) {
+            [[feedText objectAtIndex:0] removeFromSuperview];
+            [feedText removeObjectAtIndex:0];
         }
         
-        [removedObjects removeAllObjects];
-        removedObjects = nil;
+        removedItems = 0;
         
         NSLog(@"After text count: %d", [feedText count]);
     }
@@ -312,13 +308,10 @@
         [UIView commitAnimations];
         
     } else {
-        // Add the new item to the feed
-        // [feedText insertObject:[newFeedTextCache lastObject] atIndex:0];
-        
-        //[feedText insertObjects:[newFeedTextCache] atIndexes:
+        // Add the new item to the feed        
         NSArray *newFeed = [[newFeedTextCache reverseObjectEnumerator] allObjects];
         [feedText addObjectsFromArray:newFeed];
-        
+
         // Set their dimensions and add them to the view
         [self renderFeed];
         
@@ -330,8 +323,7 @@
         [UIView beginAnimations:@"fadeInNewItem" context:pos_val];
         [UIView setAnimationDuration:0.5f];
         
-        int count = 0;
-        while (count < [newFeedTextCache count]) {
+        for (int count = 0; count < [newFeedTextCache count]; count++) {
             [[newFeedTextCache objectAtIndex:count] setAlpha:1.0f];
         }
         

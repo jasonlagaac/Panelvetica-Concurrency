@@ -12,14 +12,13 @@
 
 @interface ScheduleView : FeedView
 {
-    NSMutableArray *removedObjects;
-    
+    int removedItems;
 }
 - (void)addEvent:(NSString *)event 
             time:(NSString *)time 
         location:(NSString *)location;
 
-- (void)removeObjects:(NSMutableArray *)items;
+- (void)removeObjects:(int)itemsCount;
 - (void)flushFeed;
 - (void)setStatusLoading;
 - (void)setStatusError;

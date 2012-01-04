@@ -89,11 +89,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Panelvetica/ScheduleFeedViewController.m"
-         timestampString = "347349246.375075"
+         timestampString = "347372877.02066"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "105"
-         endingLineNumber = "105"
+         startingLineNumber = "101"
+         endingLineNumber = "101"
          landmarkName = "-feedUpdate"
          landmarkType = "5">
       </FileBreakpoint>
@@ -103,25 +103,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Panelvetica/ScheduleView.m"
-         timestampString = "347344490.577133"
+         timestampString = "347372099.608434"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "315"
-         endingLineNumber = "315"
-         landmarkName = "-moveItems:finished:context:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
-         filePath = "Panelvetica/ScheduleView.m"
-         timestampString = "347344491.39469"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "319"
-         endingLineNumber = "319"
+         startingLineNumber = "311"
+         endingLineNumber = "311"
          landmarkName = "-moveItems:finished:context:"
          landmarkType = "5">
       </FileBreakpoint>
